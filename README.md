@@ -1,0 +1,2 @@
+# 8-Cell Balancer Charger
+This is the repository of a prototype 8-Cell Balancer Charger I have been working on for quite some time. If you would like to follow the development progress, feel free to visit my streams at https://www.twitch.tv/jbussmann where I usually work on this project.
