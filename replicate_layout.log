@@ -1,0 +1,23 @@
+01-03 21:00:46 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 359:Plugin executed on: 'win32'
+01-03 21:00:46 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 360:Plugin executed with python version: '3.9.14 (main, Dec 23 2022, 23:36:19) [MSC v.1934 64 bit (AMD64)]'
+01-03 21:00:46 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 361:KiCad build version: (6.0.11)
+01-03 21:00:46 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 362:Plugin version: 1.3.5
+01-03 21:00:46 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 363:Frame repr: <wx._core.Frame object at 0x0000029CFE03A790>
+01-03 21:00:46 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 387:Preparing replicator with U9 as a reference
+01-03 21:00:46 com_github_MitjaNemec_ReplicateLayout.replicate_layout 113:getting a list of all footprints on board
+01-03 21:00:46 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint REF** does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+01-03 21:00:46 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint REF** does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+01-03 21:00:46 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 435:source anchor footprint is 'U9'
+Located on: ['Balancer', 'Balancer8']
+With filenames: ['Balancer.kicad_sch', 'Blancer1-8.kicad_sch']
+With sheet_id:['Balancer', 'Balancer8']
+01-03 21:00:46 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 442:Corresponding footprints are 
+[('U16', ['Balancer', 'Balancer1']), ('U14', ['Balancer', 'Balancer3']), ('U9', ['Balancer', 'Balancer8']), ('U12', ['Balancer', 'Balancer5']), ('U10', ['Balancer', 'Balancer7']), ('U11', ['Balancer', 'Balancer6']), ('U13', ['Balancer', 'Balancer4']), ('U15', ['Balancer', 'Balancer2'])]
+01-03 21:00:46 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 454:Showing dialog
+01-03 21:00:46 com_github_MitjaNemec_ReplicateLayout.replicate_layout 391:constructing a list of sheets suitable for replication on level:'Balancer8', file:'Blancer1-8.kicad_sch'
+01-03 21:00:46 com_github_MitjaNemec_ReplicateLayout.replicate_layout 428:suitable sheets are:[['Balancer', 'Balancer1'], ['Balancer', 'Balancer2'], ['Balancer', 'Balancer3'], ['Balancer', 'Balancer4'], ['Balancer', 'Balancer5'], ['Balancer', 'Balancer6'], ['Balancer', 'Balancer7']]
+01-03 21:00:46 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1356:Level selected: ['Balancer', 'Balancer8']
+01-03 21:00:46 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1191:Filtering list of tracks
+01-03 21:00:46 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 460:Toolbar position: wx.Point(1870, -600)
+01-03 21:00:46 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 465:Dialog position: wx.Point(1506, -600)
+01-03 21:01:08 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 288:User canceled the dialog
