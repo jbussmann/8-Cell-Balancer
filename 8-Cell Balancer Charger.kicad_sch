@@ -4910,28 +4910,28 @@
       (reference "L1") (unit 1) (value "L") (footprint "")
     )
     (path "/00000000-0000-0000-0000-0000616bc635/00000000-0000-0000-0000-000061b7abf4/0170f78d-e587-4417-b1fb-b644382de4b2"
-      (reference "NT1") (unit 1) (value "NetTie_2") (footprint "")
+      (reference "NT1") (unit 1) (value "NetTie_2") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
     )
     (path "/00000000-0000-0000-0000-0000616bc635/00000000-0000-0000-0000-000061b7a8c4/0170f78d-e587-4417-b1fb-b644382de4b2"
-      (reference "NT2") (unit 1) (value "NetTie_2") (footprint "")
+      (reference "NT2") (unit 1) (value "NetTie_2") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
     )
     (path "/00000000-0000-0000-0000-0000616bc635/00000000-0000-0000-0000-000061b7431c/0170f78d-e587-4417-b1fb-b644382de4b2"
-      (reference "NT3") (unit 1) (value "NetTie_2") (footprint "")
+      (reference "NT3") (unit 1) (value "NetTie_2") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
     )
     (path "/00000000-0000-0000-0000-0000616bc635/00000000-0000-0000-0000-000061b7407c/0170f78d-e587-4417-b1fb-b644382de4b2"
-      (reference "NT4") (unit 1) (value "NetTie_2") (footprint "")
+      (reference "NT4") (unit 1) (value "NetTie_2") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
     )
     (path "/00000000-0000-0000-0000-0000616bc635/00000000-0000-0000-0000-000061b73dac/0170f78d-e587-4417-b1fb-b644382de4b2"
-      (reference "NT5") (unit 1) (value "NetTie_2") (footprint "")
+      (reference "NT5") (unit 1) (value "NetTie_2") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
     )
     (path "/00000000-0000-0000-0000-0000616bc635/00000000-0000-0000-0000-000061b738af/0170f78d-e587-4417-b1fb-b644382de4b2"
-      (reference "NT6") (unit 1) (value "NetTie_2") (footprint "")
+      (reference "NT6") (unit 1) (value "NetTie_2") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
     )
     (path "/00000000-0000-0000-0000-0000616bc635/00000000-0000-0000-0000-000061b63bc8/0170f78d-e587-4417-b1fb-b644382de4b2"
-      (reference "NT7") (unit 1) (value "NetTie_2") (footprint "")
+      (reference "NT7") (unit 1) (value "NetTie_2") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
     )
     (path "/00000000-0000-0000-0000-0000616bc635/750da065-3de8-49ad-b996-cc757b8d5c46/0170f78d-e587-4417-b1fb-b644382de4b2"
-      (reference "NT8") (unit 1) (value "NetTie_2") (footprint "")
+      (reference "NT8") (unit 1) (value "NetTie_2") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
     )
     (path "/00000000-0000-0000-0000-00005f585aac"
       (reference "Q1") (unit 1) (value "Q_NMOS_DGS") (footprint "Package_TO_SOT_SMD:SOT-323_SC-70")
