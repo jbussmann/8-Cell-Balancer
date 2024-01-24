@@ -53,9 +53,9 @@
   (fp_line (start 2.6 -3.1) (end 2.6 -3.7) (layer "F.Fab") (width 0.1) (tstamp e53fcb13-835d-4cbd-9206-1b54d6b451f3))
   (fp_line (start -2.6 -3.7) (end -2.6 -3.1) (layer "F.Fab") (width 0.1) (tstamp f0328d71-efe8-4b9c-9531-56dbc0f1da6b))
   (fp_line (start -2.6 -3.7) (end -2.1 -4.2) (layer "F.Fab") (width 0.1) (tstamp f411cd37-fdc3-4651-90c5-1fc33f46cde5))
-  (pad "1" smd rect (at 2.29 4.2 270) (size 2 1.2) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp f7cc351b-d9a0-4178-9e88-debaab9869fb))
-  (pad "2" smd rect (at 0 4.2 270) (size 2 1.2) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp 402d90aa-aedc-48f6-b8f8-baa003aaf647))
-  (pad "3" smd rect (at -2.29 4.2 270) (size 2 1.2) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp 6d5ffd98-b071-43e2-a45a-8af76ce82fcc))
+  (pad "1" smd rect (at 2.29 4.2 270) (size 2 1.2) (layers "F.Cu" "F.Mask") (tstamp f7cc351b-d9a0-4178-9e88-debaab9869fb))
+  (pad "2" smd rect (at 0 4.2 270) (size 2 1.2) (layers "F.Cu" "F.Mask") (tstamp 402d90aa-aedc-48f6-b8f8-baa003aaf647))
+  (pad "3" smd rect (at -2.29 4.2 270) (size 2 1.2) (layers "F.Cu" "F.Mask") (tstamp 6d5ffd98-b071-43e2-a45a-8af76ce82fcc))
   (model "${KICAD6_3DMODEL_DIR}/Package_TO_SOT_SMD.3dshapes/TO-252-3_TabPin2.wrl"
     (offset (xyz 0 -0.8 2.2))
     (scale (xyz 1 1 1))

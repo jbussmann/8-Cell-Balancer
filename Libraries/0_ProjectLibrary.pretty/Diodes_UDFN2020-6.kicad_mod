@@ -34,7 +34,7 @@
   (pad "5" smd rect (at 0.9375 0) (size 0.525 0.35) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp 1080d5b1-6676-431d-956b-60aa39e8ad73))
   (pad "6" smd rect (at 0.9375 -0.65) (size 0.525 0.35) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp 7d8ea5f9-3999-4643-80cc-2d5eecbcdd46))
   (pad "7" smd rect (at 0 0) (size 1.01 1.7) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp 609f45f4-c0f3-45d8-b017-32b5d5fcebe1))
-  (model "${KICAD6_3DMODEL_DIR}/Package_DFN_QFN.3dshapes/Diodes_UDFN2020-6_Type-F.wrl"
+  (model "${KICAD6_3DMODEL_DIR}/Package_DFN_QFN.3dshapes/DFN-6-1EP_2x2mm_P0.65mm_EP1x1.6mm.wrl"
     (offset (xyz 0 0 0))
     (scale (xyz 1 1 1))
     (rotate (xyz 0 0 0))

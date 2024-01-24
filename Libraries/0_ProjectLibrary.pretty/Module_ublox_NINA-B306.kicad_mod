@@ -114,4 +114,9 @@
   (pad "EGP" smd roundrect (at 0.575 -0.625) (size 0.7 0.7) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.25) (tstamp b0037100-201e-470a-9498-0ddb9e95f091))
   (pad "EGP" smd roundrect (at 0.575 -1.775) (size 0.7 0.7) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.25) (tstamp bbb72af9-1223-4c75-8fe0-ac177751707c))
   (pad "EGP" smd roundrect (at -0.575 -1.775) (size 0.7 0.7) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.25) (tstamp ffe65043-8c2d-4a60-b823-0671539c219d))
+  (model "${KIPRJMOD}/Libraries/3D-Models/Module_ublox_NINA-B306.step"
+    (offset (xyz 0 0 0))
+    (scale (xyz 1 1 1))
+    (rotate (xyz -90 0 0))
+  )
 )
