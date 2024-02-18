@@ -105,16 +105,16 @@
         "allow_microvias": false,
         "max_error": 0.005,
         "min_clearance": 0.127,
-        "min_copper_edge_clearance": 0.024999999999999998,
-        "min_hole_clearance": 0.25,
-        "min_hole_to_hole": 0.25,
+        "min_copper_edge_clearance": 0.19999999999999998,
+        "min_hole_clearance": 0.19999999999999998,
+        "min_hole_to_hole": 0.254,
         "min_microvia_diameter": 0.19999999999999998,
         "min_microvia_drill": 0.09999999999999999,
         "min_silk_clearance": 0.0,
-        "min_through_hole_diameter": 0.3,
+        "min_through_hole_diameter": 0.19999999999999998,
         "min_track_width": 0.127,
         "min_via_annular_width": 0.049999999999999996,
-        "min_via_diameter": 0.39999999999999997,
+        "min_via_diameter": 0.5,
         "use_height_for_length_calcs": true
       },
       "track_widths": [
@@ -349,7 +349,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "8-Cell Balancer Charger.kicad_pro",
+    "filename": "8-Cell Balancer.kicad_pro",
     "version": 1
   },
   "net_settings": {
@@ -386,7 +386,7 @@
       "step": "",
       "vrml": ""
     },
-    "page_layout_descr_file": ""
+    "page_layout_descr_file": "${KICAD_USER_TEMPLATE_DIR}/empty_sheet.kicad_wks"
   },
   "schematic": {
     "annotate_start_num": 0,
@@ -432,40 +432,36 @@
       ""
     ],
     [
-      "00000000-0000-0000-0000-0000616bc635",
-      "Balancer"
+      "7a2c4277-78e1-4223-8b5e-0dd81659a39f",
+      "Balancer1"
     ],
     [
-      "00000000-0000-0000-0000-000061b7abf4",
-      "Balancer8"
-    ],
-    [
-      "00000000-0000-0000-0000-000061b7a8c4",
-      "Balancer7"
-    ],
-    [
-      "00000000-0000-0000-0000-000061b7431c",
-      "Balancer6"
-    ],
-    [
-      "00000000-0000-0000-0000-000061b7407c",
-      "Balancer5"
-    ],
-    [
-      "00000000-0000-0000-0000-000061b73dac",
-      "Balancer4"
-    ],
-    [
-      "00000000-0000-0000-0000-000061b738af",
-      "Balancer3"
-    ],
-    [
-      "00000000-0000-0000-0000-000061b63bc8",
+      "018f3f87-d94e-4d9f-b598-8a4add6c72f9",
       "Balancer2"
     ],
     [
-      "750da065-3de8-49ad-b996-cc757b8d5c46",
-      "Balancer1"
+      "20a5cd31-e950-451f-8501-0b819e4d6436",
+      "Balancer3"
+    ],
+    [
+      "6a0f1f26-6601-4337-acd4-c71c12c2e2f2",
+      "Balancer4"
+    ],
+    [
+      "725f65f1-f2bd-48ef-ba17-21f3d6672f22",
+      "Balancer5"
+    ],
+    [
+      "de74be16-d9a1-4b68-95e1-44deb3e796c2",
+      "Balancer6"
+    ],
+    [
+      "340f62ec-22c5-475a-a618-66a459e3aa63",
+      "Balancer7"
+    ],
+    [
+      "404d771d-4b63-4e0c-b66a-4cb15ae10869",
+      "Balancer8"
     ]
   ],
   "text_variables": {}
