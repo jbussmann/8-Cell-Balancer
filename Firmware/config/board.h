@@ -3,6 +3,8 @@
 
 #include "nrf_gpio.h"
 
+#define I_SET_PIN   NRF_GPIO_PIN_MAP(0, 13)
+
 #define EN_3V3_PIN  NRF_GPIO_PIN_MAP(0, 15)
 
 #define LED_R_PIN   NRF_GPIO_PIN_MAP(0, 17)

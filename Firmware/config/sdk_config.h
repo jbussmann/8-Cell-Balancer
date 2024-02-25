@@ -224,6 +224,17 @@
 // #define NRFX_GPIOTE_CONFIG_INFO_COLOR
 // #define NRFX_GPIOTE_CONFIG_DEBUG_COLOR
 
+// SAADC peripheral driver configuration
+#define NRFX_SAADC_ENABLED                                    1
+// #define NRFX_SAADC_CONFIG_RESOLUTION
+// #define NRFX_SAADC_CONFIG_OVERSAMPLE
+// #define NRFX_SAADC_CONFIG_LP_MODE
+#define NRFX_SAADC_CONFIG_IRQ_PRIORITY                        6
+// #define NRFX_SAADC_CONFIG_LOG_ENABLED 1
+// #define NRFX_SAADC_CONFIG_LOG_LEVEL 4
+// #define NRFX_SAADC_CONFIG_INFO_COLOR 0
+// #define NRFX_SAADC_CONFIG_DEBUG_COLOR 0
+
 // TIMER periperal driver configuration
 #define NRFX_TIMER_ENABLED                                    1
 #define NRFX_TIMER0_ENABLED                                   0
@@ -240,15 +251,34 @@
 // #define 	NRFX_TIMER_CONFIG_INFO_COLOR 0
 // #define 	NRFX_TIMER_CONFIG_DEBUG_COLOR 0
 
-// SAADC peripheral driver configuration
-#define NRFX_SAADC_ENABLED                                    1
-// #define NRFX_SAADC_CONFIG_RESOLUTION
-// #define NRFX_SAADC_CONFIG_OVERSAMPLE
-// #define NRFX_SAADC_CONFIG_LP_MODE
-#define NRFX_SAADC_CONFIG_IRQ_PRIORITY                        6
-// #define NRFX_SAADC_CONFIG_LOG_ENABLED 1
-// #define NRFX_SAADC_CONFIG_LOG_LEVEL 4
-// #define NRFX_SAADC_CONFIG_INFO_COLOR 0
-// #define NRFX_SAADC_CONFIG_DEBUG_COLOR 0
+// PWM peripheral driver configuration
+#define NRFX_PWM_ENABLED                                      1
+#define NRFX_PWM0_ENABLED                                     1
+#define NRFX_PWM1_ENABLED                                     0
+#define NRFX_PWM2_ENABLED                                     0
+#define NRFX_PWM3_ENABLED                                     0
+// #define NRFX_PWM_DEFAULT_CONFIG_OUT0_PIN
+// #define NRFX_PWM_DEFAULT_CONFIG_OUT1_PIN
+// #define NRFX_PWM_DEFAULT_CONFIG_OUT2_PIN
+// #define NRFX_PWM_DEFAULT_CONFIG_OUT3_PIN
+// #define NRFX_PWM_DEFAULT_CONFIG_BASE_CLOCK
+// #define NRFX_PWM_DEFAULT_CONFIG_COUNT_MODE
+// #define NRFX_PWM_DEFAULT_CONFIG_TOP_VALUE
+// #define NRFX_PWM_DEFAULT_CONFIG_LOAD_MODE
+// #define NRFX_PWM_DEFAULT_CONFIG_STEP_MODE
+#define NRFX_PWM_DEFAULT_CONFIG_IRQ_PRIORITY                  6
+// #define NRFX_PWM_CONFIG_LOG_ENABLED 1
+// #define NRFX_PWM_CONFIG_LOG_LEVEL 4
+// #define NRFX_PWM_CONFIG_INFO_COLOR 0
+// #define NRFX_PWM_CONFIG_DEBUG_COLOR 0
+// #define NRFX_PWM_NRF52_ANOMALY_109_WORKAROUND_ENABLED
+// #define NRFX_PWM_NRF52_ANOMALY_109_EGU_INSTANCE
+
+// PPI peripheral allocator configuration
+#define NRFX_PPI_ENABLED                                      1
+// #define NRFX_PPI_CONFIG_LOG_ENABLED 1
+// #define NRFX_PPI_CONFIG_LOG_LEVEL 4
+// #define NRFX_PPI_CONFIG_INFO_COLOR 0
+// #define NRFX_PPI_CONFIG_DEBUG_COLOR 0
 
 #endif  // SDK_CONFIG_H

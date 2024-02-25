@@ -4,6 +4,7 @@
 #include "log.h"
 #include "nrf_log_ctrl.h"
 #include "nrf_pwr_mgmt.h"
+#include "pwm.h"
 
 #define ADVERTISING_LED LED_B_PIN
 #define CONNECTED_LED   LED_G_PIN
@@ -34,6 +35,9 @@ int main(void) {
   ble_init();
 
   adc_init();
+  pwm_init();
+
+  pwm_start();
 
   // Enter main loop.
   for (;;) {
