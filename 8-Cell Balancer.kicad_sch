@@ -2313,6 +2313,11 @@
     (uuid fe8f26fa-1610-47bf-a4d4-3003787b375c)
   )
 
+  (text "Improvements:\n- BJT instead of FET (price/rail margin)\n- switching level shifter\n- Footprint RGB-LED\n"
+    (at 73.66 191.77 0)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 606e0c1a-ed2b-4171-b3c0-8aaf086e2079)
+  )
   (text "Specs:\nMin Cell Voltage: 2.5V (LiFe: 2.6V)\nMin Pack Voltage: 20V (8x 2.5V)\nMin Balance Voltage: 3.2V (LiFe: 3.3V storage)\nMax Cell Voltage: 4.5V (HVLiPo: 4.35V)\nMax Pack Voltage: 36V (8x 4.5V)\nPeak Balance Current: 1A"
     (at 19.05 191.77 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
@@ -3053,7 +3058,7 @@
     (property "Reference" "R1" (id 0) (at 139.2174 135.9916 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
-    (property "Value" "51k" (id 1) (at 139.2174 138.303 0)
+    (property "Value" "47k" (id 1) (at 139.2174 138.303 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Footprint" "Resistor_SMD:R_0402_1005Metric" (id 2) (at 139.192 137.16 90)
@@ -3162,7 +3167,7 @@
     (property "Reference" "R2" (id 0) (at 170.9674 135.9916 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
-    (property "Value" "51k" (id 1) (at 170.9674 138.303 0)
+    (property "Value" "47k" (id 1) (at 170.9674 138.303 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Footprint" "Resistor_SMD:R_0402_1005Metric" (id 2) (at 170.942 137.16 90)
@@ -3179,7 +3184,7 @@
     (in_bom yes) (on_board yes)
     (uuid 7af0ae77-44aa-4c79-859b-53271cfe62e7)
     (property "Reference" "R4" (id 0) (at 226.06 136.9822 90))
-    (property "Value" "1.8k" (id 1) (at 226.06 139.2936 90))
+    (property "Value" "620R" (id 1) (at 226.06 139.2936 90))
     (property "Footprint" "Resistor_SMD:R_0402_1005Metric" (id 2) (at 226.06 140.462 90)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -3212,7 +3217,7 @@
     (in_bom yes) (on_board yes)
     (uuid 95c0f519-71fa-4912-bdf4-9d3e4482768c)
     (property "Reference" "R3" (id 0) (at 226.06 128.0922 90))
-    (property "Value" "1.8k" (id 1) (at 226.06 130.4036 90))
+    (property "Value" "620R" (id 1) (at 226.06 130.4036 90))
     (property "Footprint" "Resistor_SMD:R_0402_1005Metric" (id 2) (at 226.06 131.572 90)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -3343,7 +3348,7 @@
     (in_bom yes) (on_board yes)
     (uuid b6099d07-0fdf-406a-9ef1-dd728a86200c)
     (property "Reference" "R5" (id 0) (at 226.06 145.8722 90))
-    (property "Value" "1.8k" (id 1) (at 226.06 148.1836 90))
+    (property "Value" "620R" (id 1) (at 226.06 148.1836 90))
     (property "Footprint" "Resistor_SMD:R_0402_1005Metric" (id 2) (at 226.06 149.352 90)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -3377,7 +3382,7 @@
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid ba518b2f-97d5-44d9-a3ce-abbe10a4892c)
     (property "Reference" "J2" (id 0) (at 257.81 129.54 0))
-    (property "Value" "Conn_01x06" (id 1) (at 257.81 132.08 0))
+    (property "Value" "SWD" (id 1) (at 257.81 132.08 0))
     (property "Footprint" "0_ProjectLibrary:PinHeader_1x06_P1.27mm_Vertical" (id 2) (at 257.81 140.97 0)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -4256,31 +4261,31 @@
       (reference "J1") (unit 1) (value "Balance") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x09_P2.54mm_Vertical")
     )
     (path "/ba518b2f-97d5-44d9-a3ce-abbe10a4892c"
-      (reference "J2") (unit 1) (value "Conn_01x06") (footprint "0_ProjectLibrary:PinHeader_1x06_P1.27mm_Vertical")
+      (reference "J2") (unit 1) (value "SWD") (footprint "0_ProjectLibrary:PinHeader_1x06_P1.27mm_Vertical")
     )
     (path "/7a2c4277-78e1-4223-8b5e-0dd81659a39f/0170f78d-e587-4417-b1fb-b644382de4b2"
-      (reference "NT1") (unit 1) (value "NetTie_2") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
+      (reference "NT1") (unit 1) (value "NetTie") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
     )
     (path "/018f3f87-d94e-4d9f-b598-8a4add6c72f9/0170f78d-e587-4417-b1fb-b644382de4b2"
-      (reference "NT2") (unit 1) (value "NetTie_2") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
+      (reference "NT2") (unit 1) (value "NetTie") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
     )
     (path "/20a5cd31-e950-451f-8501-0b819e4d6436/0170f78d-e587-4417-b1fb-b644382de4b2"
-      (reference "NT3") (unit 1) (value "NetTie_2") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
+      (reference "NT3") (unit 1) (value "NetTie") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
     )
     (path "/6a0f1f26-6601-4337-acd4-c71c12c2e2f2/0170f78d-e587-4417-b1fb-b644382de4b2"
-      (reference "NT4") (unit 1) (value "NetTie_2") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
+      (reference "NT4") (unit 1) (value "NetTie") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
     )
     (path "/725f65f1-f2bd-48ef-ba17-21f3d6672f22/0170f78d-e587-4417-b1fb-b644382de4b2"
-      (reference "NT5") (unit 1) (value "NetTie_2") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
+      (reference "NT5") (unit 1) (value "NetTie") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
     )
     (path "/de74be16-d9a1-4b68-95e1-44deb3e796c2/0170f78d-e587-4417-b1fb-b644382de4b2"
-      (reference "NT6") (unit 1) (value "NetTie_2") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
+      (reference "NT6") (unit 1) (value "NetTie") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
     )
     (path "/340f62ec-22c5-475a-a618-66a459e3aa63/0170f78d-e587-4417-b1fb-b644382de4b2"
-      (reference "NT7") (unit 1) (value "NetTie_2") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
+      (reference "NT7") (unit 1) (value "NetTie") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
     )
     (path "/404d771d-4b63-4e0c-b66a-4cb15ae10869/0170f78d-e587-4417-b1fb-b644382de4b2"
-      (reference "NT8") (unit 1) (value "NetTie_2") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
+      (reference "NT8") (unit 1) (value "NetTie") (footprint "0_ProjectLibrary:NetTie-2_SMD_Pad0.127mm")
     )
     (path "/7a2c4277-78e1-4223-8b5e-0dd81659a39f/434d342c-d11b-48c2-a8ff-909dc88fb987"
       (reference "Q1") (unit 1) (value "PMXB360ENEA") (footprint "0_ProjectLibrary:DFN1010-3")
@@ -4403,34 +4408,34 @@
       (reference "Q40") (unit 1) (value "BSS84AKW") (footprint "Package_TO_SOT_SMD:SOT-323_SC-70")
     )
     (path "/51dac531-41e7-419c-89a6-6f2f30f69cf1"
-      (reference "R1") (unit 1) (value "51k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R1") (unit 1) (value "47k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/7a963b13-5fcc-42b5-b176-97f4ee3e6c34"
-      (reference "R2") (unit 1) (value "51k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R2") (unit 1) (value "47k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/95c0f519-71fa-4912-bdf4-9d3e4482768c"
-      (reference "R3") (unit 1) (value "1.8k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R3") (unit 1) (value "620R") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/7af0ae77-44aa-4c79-859b-53271cfe62e7"
-      (reference "R4") (unit 1) (value "1.8k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R4") (unit 1) (value "620R") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/b6099d07-0fdf-406a-9ef1-dd728a86200c"
-      (reference "R5") (unit 1) (value "1.8k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R5") (unit 1) (value "620R") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/7a2c4277-78e1-4223-8b5e-0dd81659a39f/c0683a4c-0cb9-44bd-955d-6e8b1d8f246b"
-      (reference "R6") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R6") (unit 1) (value "620R") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/7a2c4277-78e1-4223-8b5e-0dd81659a39f/53dc4386-0305-4171-9a2b-9cfd5d7b7a19"
       (reference "R7") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/7a2c4277-78e1-4223-8b5e-0dd81659a39f/48b83764-f4b0-41ea-afc0-58deb2afcff1"
-      (reference "R8") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R8") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/7a2c4277-78e1-4223-8b5e-0dd81659a39f/dffd5bfd-97c6-4436-b7cb-10d4a20ad0ee"
-      (reference "R9") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R9") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/7a2c4277-78e1-4223-8b5e-0dd81659a39f/327b0258-68d9-49fa-86bf-fafe7b4d1808"
-      (reference "R10") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R10") (unit 1) (value "47k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/7a2c4277-78e1-4223-8b5e-0dd81659a39f/e28374e6-30d7-48d1-96a5-bb156b882f24"
       (reference "R11") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
@@ -4439,37 +4444,37 @@
       (reference "R12") (unit 1) (value "0R1") (footprint "Resistor_SMD:R_0603_1608Metric")
     )
     (path "/7a2c4277-78e1-4223-8b5e-0dd81659a39f/c706b5b0-ff94-44a5-8625-e898abf9fb48"
-      (reference "R13") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R13") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/7a2c4277-78e1-4223-8b5e-0dd81659a39f/8b98508a-16e9-4186-b169-05391d1bd3fc"
-      (reference "R14") (unit 1) (value "270k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R14") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/7a2c4277-78e1-4223-8b5e-0dd81659a39f/ef122bdc-661b-42d2-9217-f01ff6de4052"
-      (reference "R15") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R15") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/7a2c4277-78e1-4223-8b5e-0dd81659a39f/f6c4f8b6-7e59-42fb-bbf5-9dd5989917c2"
-      (reference "R16") (unit 1) (value "270k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R16") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/7a2c4277-78e1-4223-8b5e-0dd81659a39f/76795760-3c96-4dca-a9fa-4b0af96baca7"
-      (reference "R17") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R17") (unit 1) (value "620R") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/7a2c4277-78e1-4223-8b5e-0dd81659a39f/784ca3b5-0614-43df-85d7-af62153a4021"
-      (reference "R18") (unit 1) (value "330k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R18") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/018f3f87-d94e-4d9f-b598-8a4add6c72f9/c0683a4c-0cb9-44bd-955d-6e8b1d8f246b"
-      (reference "R19") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R19") (unit 1) (value "620R") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/018f3f87-d94e-4d9f-b598-8a4add6c72f9/53dc4386-0305-4171-9a2b-9cfd5d7b7a19"
       (reference "R20") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/018f3f87-d94e-4d9f-b598-8a4add6c72f9/48b83764-f4b0-41ea-afc0-58deb2afcff1"
-      (reference "R21") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R21") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/018f3f87-d94e-4d9f-b598-8a4add6c72f9/dffd5bfd-97c6-4436-b7cb-10d4a20ad0ee"
-      (reference "R22") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R22") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/018f3f87-d94e-4d9f-b598-8a4add6c72f9/327b0258-68d9-49fa-86bf-fafe7b4d1808"
-      (reference "R23") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R23") (unit 1) (value "47k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/018f3f87-d94e-4d9f-b598-8a4add6c72f9/e28374e6-30d7-48d1-96a5-bb156b882f24"
       (reference "R24") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
@@ -4478,37 +4483,37 @@
       (reference "R25") (unit 1) (value "0R1") (footprint "Resistor_SMD:R_0603_1608Metric")
     )
     (path "/018f3f87-d94e-4d9f-b598-8a4add6c72f9/c706b5b0-ff94-44a5-8625-e898abf9fb48"
-      (reference "R26") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R26") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/018f3f87-d94e-4d9f-b598-8a4add6c72f9/8b98508a-16e9-4186-b169-05391d1bd3fc"
-      (reference "R27") (unit 1) (value "270k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R27") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/018f3f87-d94e-4d9f-b598-8a4add6c72f9/ef122bdc-661b-42d2-9217-f01ff6de4052"
-      (reference "R28") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R28") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/018f3f87-d94e-4d9f-b598-8a4add6c72f9/f6c4f8b6-7e59-42fb-bbf5-9dd5989917c2"
-      (reference "R29") (unit 1) (value "270k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R29") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/018f3f87-d94e-4d9f-b598-8a4add6c72f9/76795760-3c96-4dca-a9fa-4b0af96baca7"
-      (reference "R30") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R30") (unit 1) (value "620R") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/018f3f87-d94e-4d9f-b598-8a4add6c72f9/784ca3b5-0614-43df-85d7-af62153a4021"
-      (reference "R31") (unit 1) (value "330k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R31") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/20a5cd31-e950-451f-8501-0b819e4d6436/c0683a4c-0cb9-44bd-955d-6e8b1d8f246b"
-      (reference "R32") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R32") (unit 1) (value "620R") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/20a5cd31-e950-451f-8501-0b819e4d6436/53dc4386-0305-4171-9a2b-9cfd5d7b7a19"
       (reference "R33") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/20a5cd31-e950-451f-8501-0b819e4d6436/48b83764-f4b0-41ea-afc0-58deb2afcff1"
-      (reference "R34") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R34") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/20a5cd31-e950-451f-8501-0b819e4d6436/dffd5bfd-97c6-4436-b7cb-10d4a20ad0ee"
-      (reference "R35") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R35") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/20a5cd31-e950-451f-8501-0b819e4d6436/327b0258-68d9-49fa-86bf-fafe7b4d1808"
-      (reference "R36") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R36") (unit 1) (value "47k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/20a5cd31-e950-451f-8501-0b819e4d6436/e28374e6-30d7-48d1-96a5-bb156b882f24"
       (reference "R37") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
@@ -4517,37 +4522,37 @@
       (reference "R38") (unit 1) (value "0R1") (footprint "Resistor_SMD:R_0603_1608Metric")
     )
     (path "/20a5cd31-e950-451f-8501-0b819e4d6436/c706b5b0-ff94-44a5-8625-e898abf9fb48"
-      (reference "R39") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R39") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/20a5cd31-e950-451f-8501-0b819e4d6436/8b98508a-16e9-4186-b169-05391d1bd3fc"
-      (reference "R40") (unit 1) (value "270k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R40") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/20a5cd31-e950-451f-8501-0b819e4d6436/ef122bdc-661b-42d2-9217-f01ff6de4052"
-      (reference "R41") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R41") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/20a5cd31-e950-451f-8501-0b819e4d6436/f6c4f8b6-7e59-42fb-bbf5-9dd5989917c2"
-      (reference "R42") (unit 1) (value "270k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R42") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/20a5cd31-e950-451f-8501-0b819e4d6436/76795760-3c96-4dca-a9fa-4b0af96baca7"
-      (reference "R43") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R43") (unit 1) (value "620R") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/20a5cd31-e950-451f-8501-0b819e4d6436/784ca3b5-0614-43df-85d7-af62153a4021"
-      (reference "R44") (unit 1) (value "330k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R44") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/6a0f1f26-6601-4337-acd4-c71c12c2e2f2/c0683a4c-0cb9-44bd-955d-6e8b1d8f246b"
-      (reference "R45") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R45") (unit 1) (value "620R") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/6a0f1f26-6601-4337-acd4-c71c12c2e2f2/53dc4386-0305-4171-9a2b-9cfd5d7b7a19"
       (reference "R46") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/6a0f1f26-6601-4337-acd4-c71c12c2e2f2/48b83764-f4b0-41ea-afc0-58deb2afcff1"
-      (reference "R47") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R47") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/6a0f1f26-6601-4337-acd4-c71c12c2e2f2/dffd5bfd-97c6-4436-b7cb-10d4a20ad0ee"
-      (reference "R48") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R48") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/6a0f1f26-6601-4337-acd4-c71c12c2e2f2/327b0258-68d9-49fa-86bf-fafe7b4d1808"
-      (reference "R49") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R49") (unit 1) (value "47k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/6a0f1f26-6601-4337-acd4-c71c12c2e2f2/e28374e6-30d7-48d1-96a5-bb156b882f24"
       (reference "R50") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
@@ -4556,37 +4561,37 @@
       (reference "R51") (unit 1) (value "0R1") (footprint "Resistor_SMD:R_0603_1608Metric")
     )
     (path "/6a0f1f26-6601-4337-acd4-c71c12c2e2f2/c706b5b0-ff94-44a5-8625-e898abf9fb48"
-      (reference "R52") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R52") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/6a0f1f26-6601-4337-acd4-c71c12c2e2f2/8b98508a-16e9-4186-b169-05391d1bd3fc"
-      (reference "R53") (unit 1) (value "270k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R53") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/6a0f1f26-6601-4337-acd4-c71c12c2e2f2/ef122bdc-661b-42d2-9217-f01ff6de4052"
-      (reference "R54") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R54") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/6a0f1f26-6601-4337-acd4-c71c12c2e2f2/f6c4f8b6-7e59-42fb-bbf5-9dd5989917c2"
-      (reference "R55") (unit 1) (value "270k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R55") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/6a0f1f26-6601-4337-acd4-c71c12c2e2f2/76795760-3c96-4dca-a9fa-4b0af96baca7"
-      (reference "R56") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R56") (unit 1) (value "620R") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/6a0f1f26-6601-4337-acd4-c71c12c2e2f2/784ca3b5-0614-43df-85d7-af62153a4021"
-      (reference "R57") (unit 1) (value "330k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R57") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/725f65f1-f2bd-48ef-ba17-21f3d6672f22/c0683a4c-0cb9-44bd-955d-6e8b1d8f246b"
-      (reference "R58") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R58") (unit 1) (value "620R") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/725f65f1-f2bd-48ef-ba17-21f3d6672f22/53dc4386-0305-4171-9a2b-9cfd5d7b7a19"
       (reference "R59") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/725f65f1-f2bd-48ef-ba17-21f3d6672f22/48b83764-f4b0-41ea-afc0-58deb2afcff1"
-      (reference "R60") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R60") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/725f65f1-f2bd-48ef-ba17-21f3d6672f22/dffd5bfd-97c6-4436-b7cb-10d4a20ad0ee"
-      (reference "R61") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R61") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/725f65f1-f2bd-48ef-ba17-21f3d6672f22/327b0258-68d9-49fa-86bf-fafe7b4d1808"
-      (reference "R62") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R62") (unit 1) (value "47k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/725f65f1-f2bd-48ef-ba17-21f3d6672f22/e28374e6-30d7-48d1-96a5-bb156b882f24"
       (reference "R63") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
@@ -4595,37 +4600,37 @@
       (reference "R64") (unit 1) (value "0R1") (footprint "Resistor_SMD:R_0603_1608Metric")
     )
     (path "/725f65f1-f2bd-48ef-ba17-21f3d6672f22/c706b5b0-ff94-44a5-8625-e898abf9fb48"
-      (reference "R65") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R65") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/725f65f1-f2bd-48ef-ba17-21f3d6672f22/8b98508a-16e9-4186-b169-05391d1bd3fc"
-      (reference "R66") (unit 1) (value "270k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R66") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/725f65f1-f2bd-48ef-ba17-21f3d6672f22/ef122bdc-661b-42d2-9217-f01ff6de4052"
-      (reference "R67") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R67") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/725f65f1-f2bd-48ef-ba17-21f3d6672f22/f6c4f8b6-7e59-42fb-bbf5-9dd5989917c2"
-      (reference "R68") (unit 1) (value "270k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R68") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/725f65f1-f2bd-48ef-ba17-21f3d6672f22/76795760-3c96-4dca-a9fa-4b0af96baca7"
-      (reference "R69") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R69") (unit 1) (value "620R") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/725f65f1-f2bd-48ef-ba17-21f3d6672f22/784ca3b5-0614-43df-85d7-af62153a4021"
-      (reference "R70") (unit 1) (value "330k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R70") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/de74be16-d9a1-4b68-95e1-44deb3e796c2/c0683a4c-0cb9-44bd-955d-6e8b1d8f246b"
-      (reference "R71") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R71") (unit 1) (value "620R") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/de74be16-d9a1-4b68-95e1-44deb3e796c2/53dc4386-0305-4171-9a2b-9cfd5d7b7a19"
       (reference "R72") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/de74be16-d9a1-4b68-95e1-44deb3e796c2/48b83764-f4b0-41ea-afc0-58deb2afcff1"
-      (reference "R73") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R73") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/de74be16-d9a1-4b68-95e1-44deb3e796c2/dffd5bfd-97c6-4436-b7cb-10d4a20ad0ee"
-      (reference "R74") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R74") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/de74be16-d9a1-4b68-95e1-44deb3e796c2/327b0258-68d9-49fa-86bf-fafe7b4d1808"
-      (reference "R75") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R75") (unit 1) (value "47k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/de74be16-d9a1-4b68-95e1-44deb3e796c2/e28374e6-30d7-48d1-96a5-bb156b882f24"
       (reference "R76") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
@@ -4634,37 +4639,37 @@
       (reference "R77") (unit 1) (value "0R1") (footprint "Resistor_SMD:R_0603_1608Metric")
     )
     (path "/de74be16-d9a1-4b68-95e1-44deb3e796c2/c706b5b0-ff94-44a5-8625-e898abf9fb48"
-      (reference "R78") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R78") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/de74be16-d9a1-4b68-95e1-44deb3e796c2/8b98508a-16e9-4186-b169-05391d1bd3fc"
-      (reference "R79") (unit 1) (value "270k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R79") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/de74be16-d9a1-4b68-95e1-44deb3e796c2/ef122bdc-661b-42d2-9217-f01ff6de4052"
-      (reference "R80") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R80") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/de74be16-d9a1-4b68-95e1-44deb3e796c2/f6c4f8b6-7e59-42fb-bbf5-9dd5989917c2"
-      (reference "R81") (unit 1) (value "270k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R81") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/de74be16-d9a1-4b68-95e1-44deb3e796c2/76795760-3c96-4dca-a9fa-4b0af96baca7"
-      (reference "R82") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R82") (unit 1) (value "620R") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/de74be16-d9a1-4b68-95e1-44deb3e796c2/784ca3b5-0614-43df-85d7-af62153a4021"
-      (reference "R83") (unit 1) (value "330k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R83") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/340f62ec-22c5-475a-a618-66a459e3aa63/c0683a4c-0cb9-44bd-955d-6e8b1d8f246b"
-      (reference "R84") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R84") (unit 1) (value "620R") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/340f62ec-22c5-475a-a618-66a459e3aa63/53dc4386-0305-4171-9a2b-9cfd5d7b7a19"
       (reference "R85") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/340f62ec-22c5-475a-a618-66a459e3aa63/48b83764-f4b0-41ea-afc0-58deb2afcff1"
-      (reference "R86") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R86") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/340f62ec-22c5-475a-a618-66a459e3aa63/dffd5bfd-97c6-4436-b7cb-10d4a20ad0ee"
-      (reference "R87") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R87") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/340f62ec-22c5-475a-a618-66a459e3aa63/327b0258-68d9-49fa-86bf-fafe7b4d1808"
-      (reference "R88") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R88") (unit 1) (value "47k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/340f62ec-22c5-475a-a618-66a459e3aa63/e28374e6-30d7-48d1-96a5-bb156b882f24"
       (reference "R89") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
@@ -4673,37 +4678,37 @@
       (reference "R90") (unit 1) (value "0R1") (footprint "Resistor_SMD:R_0603_1608Metric")
     )
     (path "/340f62ec-22c5-475a-a618-66a459e3aa63/c706b5b0-ff94-44a5-8625-e898abf9fb48"
-      (reference "R91") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R91") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/340f62ec-22c5-475a-a618-66a459e3aa63/8b98508a-16e9-4186-b169-05391d1bd3fc"
-      (reference "R92") (unit 1) (value "270k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R92") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/340f62ec-22c5-475a-a618-66a459e3aa63/ef122bdc-661b-42d2-9217-f01ff6de4052"
-      (reference "R93") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R93") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/340f62ec-22c5-475a-a618-66a459e3aa63/f6c4f8b6-7e59-42fb-bbf5-9dd5989917c2"
-      (reference "R94") (unit 1) (value "270k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R94") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/340f62ec-22c5-475a-a618-66a459e3aa63/76795760-3c96-4dca-a9fa-4b0af96baca7"
-      (reference "R95") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R95") (unit 1) (value "620R") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/340f62ec-22c5-475a-a618-66a459e3aa63/784ca3b5-0614-43df-85d7-af62153a4021"
-      (reference "R96") (unit 1) (value "330k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R96") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/404d771d-4b63-4e0c-b66a-4cb15ae10869/c0683a4c-0cb9-44bd-955d-6e8b1d8f246b"
-      (reference "R97") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R97") (unit 1) (value "620R") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/404d771d-4b63-4e0c-b66a-4cb15ae10869/53dc4386-0305-4171-9a2b-9cfd5d7b7a19"
       (reference "R98") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/404d771d-4b63-4e0c-b66a-4cb15ae10869/48b83764-f4b0-41ea-afc0-58deb2afcff1"
-      (reference "R99") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R99") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/404d771d-4b63-4e0c-b66a-4cb15ae10869/dffd5bfd-97c6-4436-b7cb-10d4a20ad0ee"
-      (reference "R100") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R100") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/404d771d-4b63-4e0c-b66a-4cb15ae10869/327b0258-68d9-49fa-86bf-fafe7b4d1808"
-      (reference "R101") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R101") (unit 1) (value "47k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/404d771d-4b63-4e0c-b66a-4cb15ae10869/e28374e6-30d7-48d1-96a5-bb156b882f24"
       (reference "R102") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
@@ -4712,22 +4717,22 @@
       (reference "R103") (unit 1) (value "0R1") (footprint "Resistor_SMD:R_0603_1608Metric")
     )
     (path "/404d771d-4b63-4e0c-b66a-4cb15ae10869/c706b5b0-ff94-44a5-8625-e898abf9fb48"
-      (reference "R104") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R104") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/404d771d-4b63-4e0c-b66a-4cb15ae10869/8b98508a-16e9-4186-b169-05391d1bd3fc"
-      (reference "R105") (unit 1) (value "270k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R105") (unit 1) (value "22k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/404d771d-4b63-4e0c-b66a-4cb15ae10869/ef122bdc-661b-42d2-9217-f01ff6de4052"
-      (reference "R106") (unit 1) (value "100k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R106") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/404d771d-4b63-4e0c-b66a-4cb15ae10869/f6c4f8b6-7e59-42fb-bbf5-9dd5989917c2"
-      (reference "R107") (unit 1) (value "270k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R107") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/404d771d-4b63-4e0c-b66a-4cb15ae10869/76795760-3c96-4dca-a9fa-4b0af96baca7"
-      (reference "R108") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R108") (unit 1) (value "620R") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/404d771d-4b63-4e0c-b66a-4cb15ae10869/784ca3b5-0614-43df-85d7-af62153a4021"
-      (reference "R109") (unit 1) (value "330k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R109") (unit 1) (value "4.7k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/71d8bd73-fcbb-4582-bfc2-18cfa57bc6ee"
       (reference "SW1") (unit 1) (value "Reset") (footprint "0_ProjectLibrary:Button_B3U-1000")
