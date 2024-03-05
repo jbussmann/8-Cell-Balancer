@@ -1772,7 +1772,7 @@
     (property "Reference" "C46" (id 0) (at 107.95 130.8099 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
-    (property "Value" "100n" (id 1) (at 107.95 133.3499 0)
+    (property "Value" "DNP" (id 1) (at 107.95 133.3499 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Footprint" "Capacitor_SMD:C_0402_1005Metric" (id 2) (at 112.7252 135.89 0)
