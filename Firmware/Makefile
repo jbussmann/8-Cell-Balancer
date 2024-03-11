@@ -15,6 +15,7 @@ SRC_FILES += \
   $(PROJ_DIR)/bluetooth.c \
   $(PROJ_DIR)/log.c \
   $(PROJ_DIR)/main.c \
+  $(PROJ_DIR)/mux.c \
   $(PROJ_DIR)/pwm.c \
   $(SDK_ROOT)/components/ble/common/ble_advdata.c \
   $(SDK_ROOT)/components/ble/ble_advertising/ble_advertising.c \

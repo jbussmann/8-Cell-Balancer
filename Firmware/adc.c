@@ -1,5 +1,6 @@
 #include "adc.h"
 
+#include "mux.h"
 #include "nrf_saadc.h"
 #include "nrfx_saadc.h"
 #include "nrfx_timer.h"
@@ -25,10 +26,8 @@ NRF_LOG_MODULE_REGISTER();
   }
 
 static const nrfx_saadc_channel_t channels_config[] = {
-    // SAADC_CHANNEL_CONF(NRF_SAADC_INPUT_AIN2, 0),
-    // SAADC_CHANNEL_CONF(NRF_SAADC_INPUT_AIN3, 1),
-    SAADC_CHANNEL_CONF(NRF_SAADC_INPUT_AIN7, 0),
-    SAADC_CHANNEL_CONF(NRF_SAADC_INPUT_AIN5, 1),
+    SAADC_CHANNEL_CONF(NRF_SAADC_INPUT_AIN2, 0),
+    SAADC_CHANNEL_CONF(NRF_SAADC_INPUT_AIN3, 1),
 };
 #define ADC_CHANNEL_COUNT     NRFX_ARRAY_SIZE(channels_config)
 
@@ -45,9 +44,7 @@ static nrf_saadc_value_t samples_buffer[ADC_NUMBER_OF_SAMPLES];
 
 static nrfx_timer_t timer_inst = NRFX_TIMER_INSTANCE(1);
 
-void adc_set_mux() {}
-
-void adc_process_buffer() {}
+void adc_process_buffer() { NRF_LOG_INFO("processing buffer"); }
 
 static void saadc_handler(nrfx_saadc_evt_t const *p_event) {
   switch (p_event->type) {
@@ -67,10 +64,17 @@ static void saadc_handler(nrfx_saadc_evt_t const *p_event) {
       // NRF_LOG_DEBUG("SAADC-READY event");
       break;
     case NRFX_SAADC_EVT_FINISHED:  // result of EVT_END, all buffers are filled
-      NRF_LOG_DEBUG("SAADC-FINISHED event");
+      // NRF_LOG_DEBUG("SAADC-FINISHED event");
       nrfx_timer_pause(&timer_inst);
+      nrfx_timer_clear(&timer_inst);
+      mux_reset();
       NRF_LOG_INFO("Buffer has %u samples", p_event->data.done.size)
       adc_process_buffer();
+      nrfx_err_t status;
+      status = nrfx_saadc_buffer_set(samples_buffer, ADC_NUMBER_OF_SAMPLES);
+      ERROR_CHECK("SAADC buffer set", status);
+      status = nrfx_saadc_mode_trigger();
+      ERROR_CHECK("SAADC trigger", status);
       break;
     default:
       NRF_LOG_WARNING("SAADC unmapped event");
@@ -82,7 +86,7 @@ static void timer_handler(nrf_timer_event_t event_type, void *p_context) {
   switch (event_type) {
     case NRF_TIMER_EVENT_COMPARE0:
       // NRF_LOG_DEBUG("TIMER-COMPARE0 event");
-      adc_set_mux();
+      mux_set();
       nrf_saadc_task_trigger(NRF_SAADC_TASK_SAMPLE);
       break;
     default:

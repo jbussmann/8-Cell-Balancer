@@ -2,6 +2,7 @@
 #define SDK_CONFIG_H
 
 // #include "config/board.h"
+#include "app_util_platform.h"
 
 // Accessibility of peripherals under S140
 // Blocked:
@@ -114,7 +115,7 @@
 // Application timer functionality configuration
 #define APP_TIMER_ENABLED                                     1
 #define APP_TIMER_CONFIG_RTC_FREQUENCY                        1
-#define APP_TIMER_CONFIG_IRQ_PRIORITY                         6
+#define APP_TIMER_CONFIG_IRQ_PRIORITY                         APP_IRQ_PRIORITY_LOW
 #define APP_TIMER_CONFIG_OP_QUEUE_SIZE                        10
 #define APP_TIMER_CONFIG_USE_SCHEDULER                        0
 #define APP_TIMER_KEEPS_RTC_ACTIVE                            0
@@ -160,7 +161,7 @@
 
 // Log UART backend configuration
 #define NRF_LOG_BACKEND_UART_ENABLED                          1
-#define NRF_LOG_BACKEND_UART_TX_PIN                           (32 + 12)
+#define NRF_LOG_BACKEND_UART_TX_PIN                           (32 + 13)
 // #define NRF_LOG_BACKEND_UART_BAUDRATE                  30801920
 #define NRF_LOG_BACKEND_UART_BAUDRATE                         2576384
 #define NRF_LOG_BACKEND_UART_TEMP_BUFFER_SIZE                 64
@@ -171,7 +172,7 @@
 #define UART_DEFAULT_CONFIG_PARITY                            0
 // #define UART_DEFAULT_CONFIG_BAUDRATE                   30801920
 #define UART_DEFAULT_CONFIG_BAUDRATE                          2576384
-#define UART_DEFAULT_CONFIG_IRQ_PRIORITY                      6
+#define UART_DEFAULT_CONFIG_IRQ_PRIORITY                      APP_IRQ_PRIORITY_LOW
 #define UART_EASY_DMA_SUPPORT                                 1
 #define UART_LEGACY_SUPPORT                                   1
 #define UART0_ENABLED                                         1
@@ -218,7 +219,7 @@
 // GPIOTE peripheral driver configuration
 #define NRFX_GPIOTE_ENABLED                                   1
 #define NRFX_GPIOTE_CONFIG_NUM_OF_LOW_POWER_EVENTS            1
-#define NRFX_GPIOTE_CONFIG_IRQ_PRIORITY                       6
+#define NRFX_GPIOTE_CONFIG_IRQ_PRIORITY                       APP_IRQ_PRIORITY_LOW
 // #define NRFX_GPIOTE_CONFIG_LOG_ENABLED
 // #define NRFX_GPIOTE_CONFIG_LOG_LEVEL
 // #define NRFX_GPIOTE_CONFIG_INFO_COLOR
@@ -229,7 +230,7 @@
 // #define NRFX_SAADC_CONFIG_RESOLUTION
 // #define NRFX_SAADC_CONFIG_OVERSAMPLE
 // #define NRFX_SAADC_CONFIG_LP_MODE
-#define NRFX_SAADC_CONFIG_IRQ_PRIORITY                        6
+#define NRFX_SAADC_CONFIG_IRQ_PRIORITY                        APP_IRQ_PRIORITY_HIGH
 // #define NRFX_SAADC_CONFIG_LOG_ENABLED 1
 // #define NRFX_SAADC_CONFIG_LOG_LEVEL 4
 // #define NRFX_SAADC_CONFIG_INFO_COLOR 0
@@ -245,7 +246,7 @@
 // #define 	NRFX_TIMER_DEFAULT_CONFIG_FREQUENCY
 // #define 	NRFX_TIMER_DEFAULT_CONFIG_MODE
 // #define 	NRFX_TIMER_DEFAULT_CONFIG_BIT_WIDTH
-#define NRFX_TIMER_DEFAULT_CONFIG_IRQ_PRIORITY                6
+#define NRFX_TIMER_DEFAULT_CONFIG_IRQ_PRIORITY                APP_IRQ_PRIORITY_HIGH
 // #define 	NRFX_TIMER_CONFIG_LOG_ENABLED 1
 // #define 	NRFX_TIMER_CONFIG_LOG_LEVEL 4
 // #define 	NRFX_TIMER_CONFIG_INFO_COLOR 0
@@ -266,7 +267,7 @@
 // #define NRFX_PWM_DEFAULT_CONFIG_TOP_VALUE
 // #define NRFX_PWM_DEFAULT_CONFIG_LOAD_MODE
 // #define NRFX_PWM_DEFAULT_CONFIG_STEP_MODE
-#define NRFX_PWM_DEFAULT_CONFIG_IRQ_PRIORITY                  6
+#define NRFX_PWM_DEFAULT_CONFIG_IRQ_PRIORITY                  APP_IRQ_PRIORITY_HIGH
 // #define NRFX_PWM_CONFIG_LOG_ENABLED 1
 // #define NRFX_PWM_CONFIG_LOG_LEVEL 4
 // #define NRFX_PWM_CONFIG_INFO_COLOR 0

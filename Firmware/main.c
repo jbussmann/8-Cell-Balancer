@@ -2,6 +2,7 @@
 #include "bluetooth.h"
 #include "config/board.h"
 #include "log.h"
+#include "mux.h"
 #include "nrf_log_ctrl.h"
 #include "nrf_pwr_mgmt.h"
 #include "pwm.h"
@@ -17,8 +18,6 @@ static void leds_init(void) {
     nrf_gpio_cfg_output(leds[i]);
     nrf_gpio_pin_set(leds[i]);
   }
-  nrf_gpio_cfg_output(EN_3V3_PIN);
-  nrf_gpio_pin_set(EN_3V3_PIN);
 }
 
 static void idle_state_handle(void) {
@@ -35,6 +34,7 @@ int main(void) {
   ble_init();
 
   adc_init();
+  mux_init();
   pwm_init();
 
   pwm_start();

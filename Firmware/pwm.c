@@ -11,12 +11,21 @@
 NRF_LOG_MODULE_REGISTER();
 
 #define PWM_INSTANCE  0
-#define PWM_TOP_VALUE 30000
-#define PWM_REPEATS   9
+#define PWM_TOP_VALUE 100
+#define PWM_REPEATS   0
 #define PWM_END_DELAY 0
-#define PWM_PLAYBACKS 1
+#define PWM_PLAYBACKS 10
 
-static nrf_pwm_values_common_t pwm_value[1] = {0x8000};
+static nrf_pwm_values_common_t pwm_value[] = {0x8000 + 5,
+                                               0x8000 + 15,
+                                               0x8000 + 25,
+                                               0x8000 + 35,
+                                               0x8000 + 45,
+                                               0x8000 + 55,
+                                               0x8000 + 65,
+                                               0x8000 + 75,
+                                               0x8000 + 85,
+                                               0x8000 + 95};
 
 const nrfx_pwm_t pwm_instance = NRFX_PWM_INSTANCE(PWM_INSTANCE);
 
@@ -34,7 +43,7 @@ const nrf_pwm_sequence_t pwm_sequence = {
 // }
 
 void pwm_start(void) {
-  uint32_t flags = NRFX_PWM_FLAG_LOOP | NRFX_PWM_FLAG_SIGNAL_END_SEQ0 |
+  uint32_t flags = NRFX_PWM_FLAG_SIGNAL_END_SEQ0 |
                    NRFX_PWM_FLAG_SIGNAL_END_SEQ1;
   nrfx_err_t status = nrfx_pwm_simple_playback(
       &pwm_instance, &pwm_sequence, PWM_PLAYBACKS, flags);
@@ -43,7 +52,7 @@ void pwm_start(void) {
 
 static void pwm_handler(nrfx_pwm_evt_type_t event_type) {
   switch (event_type) {
-    case NRFX_PWM_EVT_FINISHED:
+    case NRFX_PWM_EVT_FINISHED: // result of EVENTS_LOOPSDONE
       NRF_LOG_DEBUG("PWM-FINISHED event");
       break;
     case NRFX_PWM_EVT_END_SEQ0:
@@ -63,10 +72,7 @@ static void pwm_handler(nrfx_pwm_evt_type_t event_type) {
 
 static void pwm_init_pwm(void) {
   const nrfx_pwm_config_t pwm_config = {
-      .output_pins = {I_SET_PIN,
-                      NRFX_PWM_PIN_NOT_USED,
-                      NRFX_PWM_PIN_NOT_USED,
-                      NRFX_PWM_PIN_NOT_USED},
+      .output_pins = {BAL1_PIN, BAL2_PIN, BAL3_PIN, BAL4_PIN},
       .irq_priority = NRFX_PWM_DEFAULT_CONFIG_IRQ_PRIORITY,
       .base_clock = NRF_PWM_CLK_1MHz,
       .count_mode = NRF_PWM_MODE_UP,
