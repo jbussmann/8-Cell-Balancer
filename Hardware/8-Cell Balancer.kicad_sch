@@ -2323,7 +2323,7 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 6b753294-9157-41f7-aa0c-7d8ef8618878)
   )
-  (text "Multiplexer:\n011 C5 V1\n000 C6 V2\n001 C7 V3\n010 C8 V4\n101 V5 C1\n110 V7 C3\n111 V6 C2\n100 V8 C4"
+  (text "Multiplexer:\n011 V1 C5\n000 V2 C6\n001 V3 C7\n010 V4 C8\n101 C1 V5\n110 C3 V7\n111 C2 V6\n100 C4 V8"
     (at 143.51 76.2 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid e95a8892-6603-40aa-9216-e82c5ff14cf4)
