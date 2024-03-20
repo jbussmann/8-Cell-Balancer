@@ -1,8 +1,9 @@
 #ifndef MUX_H
 #define MUX_H
 
-void mux_reset(void);
+#include "stdint.h"
+
 void mux_init(void);
-void mux_set(void);
+uint32_t mux_get_pwm_task_start(void);
 
 #endif  // MUX_H

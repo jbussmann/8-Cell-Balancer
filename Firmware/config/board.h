@@ -2,9 +2,12 @@
 #define BOARD_H
 
 #include "nrf_gpio.h"
+#include "nrf_saadc.h"
 
-#define LOWER_MUX_ADC NRF_GPIO_PIN_MAP(0, 4)
-#define UPPER_MUX_ADC NRF_GPIO_PIN_MAP(0, 5)
+// #define LOWER_MUX_ADC NRF_GPIO_PIN_MAP(0, 4)
+// #define UPPER_MUX_ADC NRF_GPIO_PIN_MAP(0, 5)
+#define LOWER_MUX_ADC NRF_SAADC_INPUT_AIN2
+#define UPPER_MUX_ADC NRF_SAADC_INPUT_AIN3
 
 #define MUX_S0        NRF_GPIO_PIN_MAP(0, 29)
 #define MUX_S1        NRF_GPIO_PIN_MAP(0, 30)

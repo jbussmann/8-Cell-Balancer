@@ -4,6 +4,6 @@
 #include "stdint.h"
 
 void adc_init(void);
-const uint32_t adc_get_task(void);
+const uint32_t adc_get_timer_task_start(void);
 
 #endif  // ADC_H

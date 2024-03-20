@@ -33,9 +33,9 @@ int main(void) {
 
   ble_init();
 
-  adc_init();
   mux_init();
-  pwm_init();
+  pwm_init();  // needs mux already initialized
+  adc_init();
 
   pwm_start();
 

@@ -11,6 +11,11 @@
 // CLOCK, POWER, TEMP, RNG, ECB, EGU1/SWI1/Radio Notification, ACL, NVMC, MWU,
 // UICR, NVIC,
 
+// Used peripherals
+// PWM0/1: balancer
+// PWM2: multiplexer
+// TIMER1: ADC
+
 // Interrupt priorities reserved for SoftDevice
 // Level 0: timing critical processing
 // Level 1: memory isolation and run time protection handling
@@ -230,7 +235,7 @@
 // #define NRFX_SAADC_CONFIG_RESOLUTION
 // #define NRFX_SAADC_CONFIG_OVERSAMPLE
 // #define NRFX_SAADC_CONFIG_LP_MODE
-#define NRFX_SAADC_CONFIG_IRQ_PRIORITY                        APP_IRQ_PRIORITY_HIGH
+#define NRFX_SAADC_CONFIG_IRQ_PRIORITY                        APP_IRQ_PRIORITY_LOW
 // #define NRFX_SAADC_CONFIG_LOG_ENABLED 1
 // #define NRFX_SAADC_CONFIG_LOG_LEVEL 4
 // #define NRFX_SAADC_CONFIG_INFO_COLOR 0
@@ -246,7 +251,7 @@
 // #define 	NRFX_TIMER_DEFAULT_CONFIG_FREQUENCY
 // #define 	NRFX_TIMER_DEFAULT_CONFIG_MODE
 // #define 	NRFX_TIMER_DEFAULT_CONFIG_BIT_WIDTH
-#define NRFX_TIMER_DEFAULT_CONFIG_IRQ_PRIORITY                APP_IRQ_PRIORITY_HIGH
+#define NRFX_TIMER_DEFAULT_CONFIG_IRQ_PRIORITY                APP_IRQ_PRIORITY_LOW
 // #define 	NRFX_TIMER_CONFIG_LOG_ENABLED 1
 // #define 	NRFX_TIMER_CONFIG_LOG_LEVEL 4
 // #define 	NRFX_TIMER_CONFIG_INFO_COLOR 0
@@ -256,7 +261,7 @@
 #define NRFX_PWM_ENABLED                                      1
 #define NRFX_PWM0_ENABLED                                     1
 #define NRFX_PWM1_ENABLED                                     0
-#define NRFX_PWM2_ENABLED                                     0
+#define NRFX_PWM2_ENABLED                                     1
 #define NRFX_PWM3_ENABLED                                     0
 // #define NRFX_PWM_DEFAULT_CONFIG_OUT0_PIN
 // #define NRFX_PWM_DEFAULT_CONFIG_OUT1_PIN
@@ -267,7 +272,7 @@
 // #define NRFX_PWM_DEFAULT_CONFIG_TOP_VALUE
 // #define NRFX_PWM_DEFAULT_CONFIG_LOAD_MODE
 // #define NRFX_PWM_DEFAULT_CONFIG_STEP_MODE
-#define NRFX_PWM_DEFAULT_CONFIG_IRQ_PRIORITY                  APP_IRQ_PRIORITY_HIGH
+#define NRFX_PWM_DEFAULT_CONFIG_IRQ_PRIORITY                  APP_IRQ_PRIORITY_LOW
 // #define NRFX_PWM_CONFIG_LOG_ENABLED 1
 // #define NRFX_PWM_CONFIG_LOG_LEVEL 4
 // #define NRFX_PWM_CONFIG_INFO_COLOR 0
