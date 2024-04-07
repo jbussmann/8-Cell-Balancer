@@ -14,91 +14,71 @@ NRF_LOG_MODULE_REGISTER();
 #define PWM_TOP_VALUE 100
 #define PWM_REPEATS   0
 #define PWM_END_DELAY 0
-#define PWM_PLAYBACKS 10
+#define PWM_PLAYBACKS 1
 
-static nrf_pwm_values_common_t pwm_value[] = {0x8000 + 5,
-                                              0x8000 + 15,
-                                              0x8000 + 25,
-                                              0x8000 + 35,
-                                              0x8000 + 45,
-                                              0x8000 + 55,
-                                              0x8000 + 65,
-                                              0x8000 + 75,
-                                              0x8000 + 85,
-                                              0x8000 + 95};
+static nrf_pwm_values_individual_t pwm_value_14[] = {
+    {0x8000 + 5, 0x8000 + 5, 0x8000 + 5, 0x8000 + 5}};
+static nrf_pwm_values_individual_t pwm_value_58[] = {
+    {0x8000 + 5, 0x8000 + 5, 0x8000 + 5, 0x8000 + 5}};
 
 static const nrfx_pwm_t pwm0_instance_bal14 = NRFX_PWM_INSTANCE(0);
-// const nrfx_pwm_t pwm1_instance_bal58 = NRFX_PWM_INSTANCE(PWM_INSTANCE);
+static const nrfx_pwm_t pwm1_instance_bal58 = NRFX_PWM_INSTANCE(1);
 
-static const nrf_pwm_sequence_t pwm_sequence = {
-    .values.p_common = pwm_value,
-    .length = NRF_PWM_VALUES_LENGTH(pwm_value),
+static const nrf_pwm_sequence_t pwm_sequence_14 = {
+    .values.p_individual = pwm_value_14,
+    .length = NRF_PWM_VALUES_LENGTH(pwm_value_14),
+    .repeats = PWM_REPEATS,
+    .end_delay = PWM_END_DELAY};
+static const nrf_pwm_sequence_t pwm_sequence_58 = {
+    .values.p_individual = pwm_value_58,
+    .length = NRF_PWM_VALUES_LENGTH(pwm_value_58),
     .repeats = PWM_REPEATS,
     .end_delay = PWM_END_DELAY};
 
-// static void pwm_invert_values(nrf_pwm_values_common_t* values,
-//                               uint16_t length) {
-//   for (size_t i = 0; i < length; i++) {
-//     values[i] |= 0x8000;
-//   }
-// }
-
-void pwm_start(void) {
-  uint32_t flags =
-      NRFX_PWM_FLAG_SIGNAL_END_SEQ0 | NRFX_PWM_FLAG_SIGNAL_END_SEQ1;
-  nrfx_pwm_simple_playback(
-      &pwm0_instance_bal14, &pwm_sequence, PWM_PLAYBACKS, flags);
+void pwm_update_values(uint16_t values[]) {
+  pwm_value_14->channel_0 = 0x8000 + values[0];
+  pwm_value_14->channel_1 = 0x8000 + values[1];
+  pwm_value_14->channel_2 = 0x8000 + values[2];
+  pwm_value_14->channel_3 = 0x8000 + values[3];
+  pwm_value_58->channel_0 = 0x8000 + values[4];
+  pwm_value_58->channel_1 = 0x8000 + values[5];
+  pwm_value_58->channel_2 = 0x8000 + values[6];
+  pwm_value_58->channel_3 = 0x8000 + values[7];
 }
 
-static void pwm_init_pwm(void) {
-  const nrfx_pwm_config_t pwm_config = {
+void pwm_start(void) {
+  nrfx_pwm_simple_playback(&pwm0_instance_bal14,
+                           &pwm_sequence_14,
+                           PWM_PLAYBACKS,
+                           NRFX_PWM_FLAG_LOOP);
+  nrfx_pwm_simple_playback(&pwm1_instance_bal58,
+                           &pwm_sequence_58,
+                           PWM_PLAYBACKS,
+                           NRFX_PWM_FLAG_LOOP);
+}
+
+void pwm_init(void) {
+  const nrfx_pwm_config_t pwm_config_14 = {
       .output_pins = {BAL1_PIN, BAL2_PIN, BAL3_PIN, BAL4_PIN},
       .irq_priority = NRFX_PWM_DEFAULT_CONFIG_IRQ_PRIORITY,
       .base_clock = NRF_PWM_CLK_1MHz,
       .count_mode = NRF_PWM_MODE_UP,
       .top_value = PWM_TOP_VALUE,
-      .load_mode = NRF_PWM_LOAD_COMMON,
+      .load_mode = NRF_PWM_LOAD_INDIVIDUAL,
       .step_mode = NRF_PWM_STEP_AUTO};
 
-  nrfx_err_t status = nrfx_pwm_init(&pwm0_instance_bal14, &pwm_config, NULL);
-  ERROR_CHECK("PWM init", status);
-}
+  nrfx_err_t status = nrfx_pwm_init(&pwm0_instance_bal14, &pwm_config_14, NULL);
+  ERROR_CHECK("PWM0 init", status);
 
-static void pwm_init_ppi(void) {
-  nrf_ppi_channel_t ppi_channel0;
-  nrf_ppi_channel_t ppi_channel1;
-  nrfx_err_t status;
+  const nrfx_pwm_config_t pwm_config_58 = {
+      .output_pins = {BAL5_PIN, BAL6_PIN, BAL7_PIN, BAL8_PIN},
+      .irq_priority = NRFX_PWM_DEFAULT_CONFIG_IRQ_PRIORITY,
+      .base_clock = NRF_PWM_CLK_1MHz,
+      .count_mode = NRF_PWM_MODE_UP,
+      .top_value = PWM_TOP_VALUE,
+      .load_mode = NRF_PWM_LOAD_INDIVIDUAL,
+      .step_mode = NRF_PWM_STEP_AUTO};
 
-  status = nrfx_ppi_channel_alloc(&ppi_channel0);
-  ERROR_CHECK("PPI0 alloc", status);
-  status = nrfx_ppi_channel_alloc(&ppi_channel1);
-  ERROR_CHECK("PPI1 alloc", status);
-
-  const uint32_t event_seq_started0 = nrfx_pwm_event_address_get(
-      &pwm0_instance_bal14, NRF_PWM_EVENT_SEQSTARTED0);
-  const uint32_t event_seq_started1 = nrfx_pwm_event_address_get(
-      &pwm0_instance_bal14, NRF_PWM_EVENT_SEQSTARTED1);
-  const uint32_t task_timer_start = adc_get_timer_task_start();
-  const uint32_t task_pwm_start = mux_get_pwm_task_start();
-
-  status = nrfx_ppi_channel_assign(
-      ppi_channel0, event_seq_started0, task_timer_start);
-  ERROR_CHECK("PPI0 assign", status);
-  status = nrfx_ppi_channel_fork_assign(ppi_channel0, task_pwm_start);
-  ERROR_CHECK("PPI0 fork assign", status);
-  status = nrfx_ppi_channel_enable(ppi_channel0);
-  ERROR_CHECK("PPI0 enable", status);
-
-  status = nrfx_ppi_channel_assign(
-      ppi_channel1, event_seq_started1, task_timer_start);
-  ERROR_CHECK("PPI1 assign", status);
-  status = nrfx_ppi_channel_fork_assign(ppi_channel1, task_pwm_start);
-  ERROR_CHECK("PPI1 fork assign", status);
-  status = nrfx_ppi_channel_enable(ppi_channel1);
-  ERROR_CHECK("PPI1 enable", status);
-}
-
-void pwm_init(void) {
-  pwm_init_pwm();
-  pwm_init_ppi();
+  status = nrfx_pwm_init(&pwm1_instance_bal58, &pwm_config_58, NULL);
+  ERROR_CHECK("PWM1 init", status);
 }

@@ -30,4 +30,7 @@
 // also set NRF_LOG_BACKEND_UART_TX_PIN!
 #define UART_TX_PIN   NRF_GPIO_PIN_MAP(1, 13)
 
+#define TP1_PIN     NRF_GPIO_PIN_MAP(0, 11)
+#define TP2_PIN     NRF_GPIO_PIN_MAP(0, 14)
+
 #endif  // BOARD_H

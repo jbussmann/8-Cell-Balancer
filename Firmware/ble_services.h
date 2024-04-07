@@ -1,12 +1,13 @@
-#ifndef LOG_H
-#define LOG_H
+#ifndef BLE_SERVICES_H
+#define BLE_SERVICES_H
 
 #include <stdint.h>
 
 #include "bluetooth.h"
 
-void ble_characteristic_update(ble_os_t *p_service,
-                               int32_t *p_temperature_value);
+enum { VOLTAGE, CURRENT, VOLT_DEV, CURR_DEV, PWM_SET};
+
+void ble_notify_cell_values(uint32_t values[], uint8_t type);
 void ble_service_init(ble_os_t *p_service);
 
-#endif  // LOG_H
+#endif  // BLE_SERVICES_H

@@ -1,5 +1,5 @@
-#ifndef _LOG_H  // somehow LOG_H is already defined!?
-#define _LOG_H
+#ifndef LOG_H
+#define LOG_H
 
 #include "nrf_log.h"
 
@@ -17,4 +17,4 @@
 
 void log_init(void);
 
-#endif  // _LOG_H
+#endif  // LOG_H

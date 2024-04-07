@@ -38,6 +38,22 @@
 #define NRF_SDH_ANT_STACK_OBSERVER_PRIO                       0
 #define NRF_SDH_BLE_STACK_OBSERVER_PRIO                       0
 #define NRF_SDH_SOC_STACK_OBSERVER_PRIO                       0
+// #define NRF_SDH_ANT_LOG_ENABLED
+// #define NRF_SDH_ANT_LOG_LEVEL
+// #define NRF_SDH_ANT_INFO_COLOR
+// #define NRF_SDH_ANT_DEBUG_COLOR
+// #define NRF_SDH_BLE_LOG_ENABLED 1
+// #define NRF_SDH_BLE_LOG_LEVEL 4
+// #define NRF_SDH_BLE_INFO_COLOR 0
+// #define NRF_SDH_BLE_DEBUG_COLOR 0
+// #define NRF_SDH_LOG_ENABLED 1
+// #define NRF_SDH_LOG_LEVEL 4
+// #define NRF_SDH_INFO_COLOR 0
+// #define NRF_SDH_DEBUG_COLOR 0
+// #define NRF_SDH_SOC_LOG_ENABLED
+// #define NRF_SDH_SOC_LOG_LEVEL
+// #define NRF_SDH_SOC_INFO_COLOR
+// #define NRF_SDH_SOC_DEBUG_COLOR
 
 // SoftDevice SoC event handler configuration
 #define NRF_SDH_SOC_ENABLED                                   1
@@ -53,7 +69,7 @@
 #define NRF_SDH_BLE_CENTRAL_LINK_COUNT                        0
 #define NRF_SDH_BLE_TOTAL_LINK_COUNT                          1
 #define NRF_SDH_BLE_GAP_EVENT_LENGTH                          6
-#define NRF_SDH_BLE_GATT_MAX_MTU_SIZE                         23
+#define NRF_SDH_BLE_GATT_MAX_MTU_SIZE                         (39 + 3)
 #define NRF_SDH_BLE_GATTS_ATTR_TAB_SIZE                       1408
 #define NRF_SDH_BLE_VS_UUID_COUNT                             10
 #define NRF_SDH_BLE_SERVICE_CHANGED                           0
@@ -127,6 +143,11 @@
 #define APP_TIMER_SAFE_WINDOW_MS                              300000
 #define APP_TIMER_WITH_PROFILER                               0
 #define APP_TIMER_CONFIG_SWI_NUMBER                           0
+// #define APP_TIMER_CONFIG_LOG_ENABLED
+// #define APP_TIMER_CONFIG_LOG_LEVEL
+// #define APP_TIMER_CONFIG_INITIAL_LOG_LEVEL
+// #define APP_TIMER_CONFIG_INFO_COLOR
+// #define APP_TIMER_CONFIG_DEBUG_COLOR
 
 // Power management module configuration
 #define NRF_PWR_MGMT_ENABLED                                  1
@@ -260,7 +281,7 @@
 // PWM peripheral driver configuration
 #define NRFX_PWM_ENABLED                                      1
 #define NRFX_PWM0_ENABLED                                     1
-#define NRFX_PWM1_ENABLED                                     0
+#define NRFX_PWM1_ENABLED                                     1
 #define NRFX_PWM2_ENABLED                                     1
 #define NRFX_PWM3_ENABLED                                     0
 // #define NRFX_PWM_DEFAULT_CONFIG_OUT0_PIN

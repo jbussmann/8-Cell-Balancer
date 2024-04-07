@@ -1,5 +1,6 @@
 #include "adc.h"
 
+#include "ble_services.h"
 #include "config/board.h"
 #include "config/sdk_config.h"
 #include "mux.h"
@@ -46,22 +47,30 @@ static const nrfx_saadc_channel_t channels_config[] = {
 
 static nrf_saadc_value_t samples_buffer[ADC_NUMBER_OF_SAMPLES];
 
-static nrfx_timer_t timer1_inst_adc = NRFX_TIMER_INSTANCE(1);
-
 #define NUMBER_OF_CELLS   8
 #define NUMBER_OF_SAMPLES 8  // danger of type overflow
 
 typedef struct {
   nrf_saadc_value_t raw_values[NUMBER_OF_SAMPLES];
   // in millivolt/milliampere
-  int16_t avg_value_millis;
-  int16_t deviation_millis;
+  uint16_t avg_value_millis;
+  uint16_t deviation_millis;
 } cell_values_t;
 
 typedef struct {
   cell_values_t voltage;
   cell_values_t current;
 } cell_t;
+
+typedef struct {
+  uint32_t voltage[NUMBER_OF_CELLS];
+  uint32_t current[NUMBER_OF_CELLS];
+  uint32_t voltage_deviation[NUMBER_OF_CELLS];
+  uint32_t current_deviation[NUMBER_OF_CELLS];
+  uint16_t length;
+} ble_values_t;
+
+static ble_values_t ble_values;
 
 static void adc_deinterlace_buffer(cell_t cells[],
                                    nrf_saadc_value_t *p_buffer) {
@@ -131,6 +140,29 @@ static void adc_aggregate_current(cell_t cells[]) {
   }
 }
 
+static void adc_add_values_to_ble_struct(cell_t cells[]) {
+  for (size_t i = 0; i < NUMBER_OF_CELLS; i++) {
+    ble_values.voltage[i] += cells[i].voltage.avg_value_millis;
+    ble_values.current[i] += cells[i].current.avg_value_millis;
+
+    if (ble_values.voltage_deviation[i] < cells[i].voltage.deviation_millis) {
+      ble_values.voltage_deviation[i] = cells[i].voltage.deviation_millis;
+    }
+
+    if (ble_values.current_deviation[i] < cells[i].current.deviation_millis) {
+      ble_values.current_deviation[i] = cells[i].current.deviation_millis;
+    }
+  }
+  ble_values.length += 1;
+}
+
+static void adc_prepare_ble_transmission() {
+  for (size_t i = 0; i < NUMBER_OF_CELLS; i++) {
+    ble_values.voltage[i] /= ble_values.length;
+    ble_values.current[i] /= ble_values.length;
+  }
+}
+
 static void adc_process_buffer(nrfx_saadc_done_evt_t done_event) {
   cell_t cells[NUMBER_OF_CELLS];
 
@@ -138,53 +170,50 @@ static void adc_process_buffer(nrfx_saadc_done_evt_t done_event) {
   adc_aggregate_voltage(cells);
   adc_aggregate_current(cells);
 
-  NRF_LOG_INFO("v_low:    %4i, %4i, %4i, %4i",
-               cells[0].voltage.avg_value_millis,
-               cells[1].voltage.avg_value_millis,
-               cells[2].voltage.avg_value_millis,
-               cells[3].voltage.avg_value_millis);
-  NRF_LOG_INFO("v_high:   %4i, %4i, %4i, %4i",
-               cells[4].voltage.avg_value_millis,
-               cells[5].voltage.avg_value_millis,
-               cells[6].voltage.avg_value_millis,
-               cells[7].voltage.avg_value_millis);
-  NRF_LOG_INFO("dev_low:  %4i, %4i, %4i, %4i",
-               cells[0].voltage.deviation_millis,
-               cells[1].voltage.deviation_millis,
-               cells[2].voltage.deviation_millis,
-               cells[3].voltage.deviation_millis);
-  NRF_LOG_INFO("dev_high: %4i, %4i, %4i, %4i",
-               cells[4].voltage.deviation_millis,
-               cells[5].voltage.deviation_millis,
-               cells[6].voltage.deviation_millis,
-               cells[7].voltage.deviation_millis);
+  // uint16_t cell_voltages[NUMBER_OF_CELLS];
+  // for (size_t i = 0; i < NUMBER_OF_CELLS; i++) {
+  //   cell_voltages[i] = cells[i].voltage.avg_value_millis;
+  // }
+  // pwm_set_values(cell_voltages);
 
-  // NRF_LOG_INFO("v_low: %i, %i, %i, %i",
-  //              cells[0].voltage.raw_values[7],
-  //              cells[1].voltage.raw_values[7],
-  //              cells[2].voltage.raw_values[7],
-  //              cells[3].voltage.raw_values[7]);
-  // NRF_LOG_INFO("v_high: %i, %i, %i, %i",
-  //              cells[4].voltage.raw_values[7],
-  //              cells[5].voltage.raw_values[7],
-  //              cells[6].voltage.raw_values[7],
-  //              cells[7].voltage.raw_values[7]);
-  // NRF_LOG_INFO("c_low: %i, %i, %i, %i",
-  //              cells[0].current.raw_values[7],
-  //              cells[1].current.raw_values[7],
-  //              cells[2].current.raw_values[7],
-  //              cells[3].current.raw_values[7]);
-  // NRF_LOG_INFO("c_high: %i, %i, %i, %i",
-  //              cells[4].current.raw_values[7],
-  //              cells[5].current.raw_values[7],
-  //              cells[6].current.raw_values[7],
-  //              cells[7].current.raw_values[7]);
+  adc_add_values_to_ble_struct(cells);
+
+  if (1000 <= ble_values.length) {
+    adc_prepare_ble_transmission();
+    static char value_string[47] = {};  // static for logger
+    snprintf(value_string,
+             sizeof(value_string),
+             "%4lu,%4lu,%4lu,%4lu,%4lu,%4lu,%4lu,%4lu (%i)",
+             ble_values.voltage[0],
+             ble_values.voltage[1],
+             ble_values.voltage[2],
+             ble_values.voltage[3],
+             ble_values.voltage[4],
+             ble_values.voltage[5],
+             ble_values.voltage[6],
+             ble_values.voltage[7],
+             ble_values.length);
+    NRF_LOG_INFO("%s", value_string);
+    ble_notify_cell_values(ble_values.voltage, VOLTAGE);
+    ble_notify_cell_values(ble_values.current, CURRENT);
+    // ble_notify_cell_values(values[8])
+    // ble_notify_cell_values(values[8])
+    memset(&ble_values, 0, sizeof(ble_values));
+  }
 }
 
 static void saadc_handler(nrfx_saadc_evt_t const *p_event) {
   switch (p_event->type) {
     case NRFX_SAADC_EVT_DONE:  // result of EVT_END, current buffer is filled
-      NRF_LOG_DEBUG("SAADC-DONE event");
+      // NRF_LOG_DEBUG("SAADC-DONE event");
+      // NRF_SAADC_STATE_ADV_MODE_SAMPLE_STARTED
+      adc_process_buffer(p_event->data.done);
+
+      // reinitialize adc to prevent sample swaps by clearing excess samples
+      nrfx_saadc_uninit();
+      adc_init();
+
+      mux_pwm_start();
       break;
     case NRFX_SAADC_EVT_LIMIT:
       NRF_LOG_DEBUG("SAADC-LIMIT event");
@@ -199,16 +228,7 @@ static void saadc_handler(nrfx_saadc_evt_t const *p_event) {
       // NRF_LOG_DEBUG("SAADC-READY event");
       break;
     case NRFX_SAADC_EVT_FINISHED:  // result of EVT_END, all buffers are filled
-      // NRF_LOG_DEBUG("SAADC-FINISHED event");
-      nrfx_timer_clear(&timer1_inst_adc);  // timer is stopped by PPI
-
-      nrfx_err_t status;
-      status = nrfx_saadc_buffer_set(samples_buffer, ADC_NUMBER_OF_SAMPLES);
-      ERROR_CHECK("SAADC buffer set", status);
-      status = nrfx_saadc_mode_trigger();
-      ERROR_CHECK("SAADC trigger", status);
-
-      adc_process_buffer(p_event->data.done);
+      // NRF_LOG_DEBUG("SAADC-FINISHED event");  // NRF_SAADC_STATE_ADV_MODE
       break;
     default:
       NRF_LOG_WARNING("SAADC unmapped event");
@@ -216,18 +236,18 @@ static void saadc_handler(nrfx_saadc_evt_t const *p_event) {
   }
 }
 
-static void adc_init_saadc(void) {
+void adc_init(void) {
   nrfx_err_t status;
 
   status = nrfx_saadc_init(NRFX_SAADC_CONFIG_IRQ_PRIORITY);
-  ERROR_CHECK("SAADC init", status);
+  ERROR_CHECK("SAADC init", status);  // NRF_SAADC_STATE_IDLE
 
   status = nrfx_saadc_channels_config(channels_config, ADC_CHANNEL_COUNT);
   ERROR_CHECK("SAADC config", status);
 
-  status = nrfx_saadc_offset_calibrate(NULL);  // NULL -> blocking
+  status = nrfx_saadc_offset_calibrate(NULL);     // NULL -> blocking
+  ERROR_CHECK("SAADC offset calibrate", status);  // NRF_SAADC_STATE_IDLE
 
-  // prevent sample swapping (is this true?)
   nrfx_saadc_adv_config_t adv_config = {
       .oversampling = NRF_SAADC_OVERSAMPLE_DISABLED,
       .burst = NRF_SAADC_BURST_DISABLED,
@@ -237,72 +257,13 @@ static void adc_init_saadc(void) {
   status = nrfx_saadc_advanced_mode_set(
       0b00000011, ADC_RESOLUTON, &adv_config, saadc_handler);
   ERROR_CHECK("SAADC mode set", status);
+  // NRF_SAADC_STATE_ADV_MODE, both buffers set to NULL
 
   status = nrfx_saadc_buffer_set(samples_buffer, ADC_NUMBER_OF_SAMPLES);
-  ERROR_CHECK("SAADC buffer set", status);
+  ERROR_CHECK("SAADC samples buffer set", status);
 
   status = nrfx_saadc_mode_trigger();
   ERROR_CHECK("SAADC trigger", status);
-}
-
-static void adc_init_timer(void) {
-  const nrfx_timer_config_t timer_config = {
-      .frequency = NRF_TIMER_FREQ_2MHz,
-      .mode = NRF_TIMER_MODE_TIMER,
-      .bit_width = NRF_TIMER_BIT_WIDTH_32,
-      .interrupt_priority = NRFX_TIMER_DEFAULT_CONFIG_IRQ_PRIORITY,
-      .p_context = &timer1_inst_adc};
-  nrfx_err_t status;
-
-  status = nrfx_timer_init(&timer1_inst_adc, &timer_config, NULL);
-  ERROR_CHECK("TIMER init", status);
-
-  nrfx_timer_compare(
-      &timer1_inst_adc, NRF_TIMER_CC_CHANNEL0, ADC_SAMPLE_START_TICKS, false);
-  nrfx_timer_extended_compare(&timer1_inst_adc,
-                              NRF_TIMER_CC_CHANNEL1,
-                              ADC_CLEAR_TIMER_TICKS,
-                              NRF_TIMER_SHORT_COMPARE1_CLEAR_MASK,
-                              false);
-
-  // make sure PPI is not connected yet when this is run
-  nrfx_timer_enable(&timer1_inst_adc);  // TIMER starts
-  nrfx_timer_pause(&timer1_inst_adc);
-  nrfx_timer_clear(&timer1_inst_adc);  // ready for PPI trigger
-}
-
-static void adc_init_ppi(void) {
-  nrf_ppi_channel_t ppi_channel0;
-  nrf_ppi_channel_t ppi_channel1;
-  nrfx_err_t status;
-
-  status = nrfx_ppi_channel_alloc(&ppi_channel0);
-  ERROR_CHECK("PPI0 alloc", status);
-  status = nrfx_ppi_channel_assign(
-      ppi_channel0,
-      nrfx_timer_compare_event_address_get(&timer1_inst_adc, 0),
-      nrf_saadc_task_address_get(NRF_SAADC_TASK_SAMPLE));
-  ERROR_CHECK("PPI0 assign", status);
-  status = nrfx_ppi_channel_enable(ppi_channel0);
-  ERROR_CHECK("PPI0 enable", status);
-
-  status = nrfx_ppi_channel_alloc(&ppi_channel1);
-  ERROR_CHECK("PPI1 alloc", status);
-  status = nrfx_ppi_channel_assign(
-      ppi_channel1,
-      nrf_saadc_event_address_get(NRF_SAADC_EVENT_END),
-      nrfx_timer_task_address_get(&timer1_inst_adc, NRF_TIMER_TASK_STOP));
-  ERROR_CHECK("PPI1 assign", status);
-  status = nrfx_ppi_channel_enable(ppi_channel1);
-  ERROR_CHECK("PPI1 enable", status);
-}
-
-const uint32_t adc_get_timer_task_start(void) {
-  return nrfx_timer_task_address_get(&timer1_inst_adc, NRF_TIMER_TASK_START);
-}
-
-void adc_init(void) {
-  adc_init_saadc();
-  adc_init_timer();
-  adc_init_ppi();
+  // NRF_SAADC_STATE_ADV_MODE_SAMPLE ->
+  // NRF_SAADC_STATE_ADV_MODE_SAMPLE_STARTED
 }

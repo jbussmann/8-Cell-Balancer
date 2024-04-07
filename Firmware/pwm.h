@@ -5,6 +5,6 @@
 
 void pwm_init(void);
 void pwm_start(void);
-// void pwm_set_value(nrf_pwm_values_common_t value);
+void pwm_update_values(uint16_t values[]);
 
 #endif  // PWM_H

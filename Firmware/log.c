@@ -1,9 +1,10 @@
-#include "log.h"
-
-#include "nrf_error.h"
-#include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
+
+#define NRF_LOG_MODULE_NAME log
+#include "log.h"
+#include "nrf_log.h"
+NRF_LOG_MODULE_REGISTER();
 
 void log_init(void) {
   ret_code_t err_code = NRF_LOG_INIT(NULL);
