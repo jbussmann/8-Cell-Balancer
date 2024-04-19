@@ -13,7 +13,7 @@ from matplotlib.figure import Figure
         
 class MainWindow(tk.Tk):
 
-    def __init__(self, loop):
+    def __init__(self, event_loop):
         super().__init__()
         self.title("8-Cell Balancer")
         self.wm_iconphoto(True, tk.PhotoImage(file="icon_20.png"))
@@ -22,12 +22,15 @@ class MainWindow(tk.Tk):
 
         self.btn_pwm_pressed = False
         self.app_exit_flag = False
+        self.is_values_curr_ready = False
+        self.is_values_volt_ready = False
+        self.counter_seconds = 0
         self.device = None
         self.file = None
         self.protocol("WM_DELETE_WINDOW", self.close)
-        self.loop = loop
-        self.gui_task = self.loop.create_task(self.gui_loop())
-        self.connection_task = self.loop.create_task(self.connection_loop())
+        self.event_loop = event_loop
+        self.gui_task = self.event_loop.create_task(self.gui_loop())
+        self.connection_task = self.event_loop.create_task(self.connection_loop())
 
         # Place in the middle of the screen
         xpos = (self.winfo_screenwidth() - width) // 2
@@ -44,59 +47,68 @@ class MainWindow(tk.Tk):
         self['bd'] = 5
 
         # matpotlib figure for plotting 
-        self.figure = Figure(tight_layout=True)
+        self.figure = Figure(constrained_layout=True)
         axes_volt, axes_curr = self.figure.subplots(2, 1)
-        self.plot_values_volt = [[None] * 31 for _ in range(8)]
-        self.plot_values_curr = [[None] * 31 for _ in range(8)]
+        self.values = {
+            "voltage_12h": None,
+            "voltage_1h": None,
+            "voltage_2min": None,
+            "current_12h": None,
+            "current_1h": None,
+            "current_2min": None
+        }
+        for i in self.values:
+            self.values[i] = [[None] * 121 for _ in range(8)]
 
         colors = seaborn.color_palette("tab10", 8)
         self.lines_volt = [None] * 8
         self.lines_curr = [None] * 8
 
         for i in range(8):
-            self.lines_volt[i], = axes_volt.plot(self.plot_values_volt[i], label=f'Cell {i+1}', color=colors[i])
-            self.lines_curr[i], = axes_curr.plot(self.plot_values_curr[i], label=f'Cell {i+1}', color=colors[i])
+            self.lines_volt[i], = axes_volt.plot(self.values["voltage_2min"][i], label=f'Cell {i+1}', color=colors[i])
+            self.lines_curr[i], = axes_curr.plot(self.values["current_2min"][i], label=f'Cell {i+1}', color=colors[i])
 
-        axes_volt.set_xlim(-1, 31)
-        axes_volt.set_ylim(-0.2, 5.2)
-        # axes_volt.legend(loc='center left', ncol=8, bbox_to_anchor=(1.02, 0.5))
+        axes_volt.set_xlim(-1, 121)
+        axes_volt.set_ylim(3.15, 3.7)
         axes_volt.grid()
 
-        axes_curr.set_xlim(-1, 31)
-        axes_curr.set_ylim(-0.1, 1.1)
-        # axes_curr.legend(loc='center left', ncol=8, bbox_to_anchor=(1.02, 0.5))
+        axes_curr.set_xlim(-1, 121)
+        axes_curr.set_ylim(-0.02, 0.25)
         axes_curr.grid()
 
+        self.legend = self.figure.legend(handles=self.lines_volt, loc='outside center right', labelspacing=1.3, handlelength=0, labelcolor='linecolor', edgecolor='None')
+        
         # place plot
         self.canvas = FigureCanvasTkAgg(self.figure, master=self)
         self.canvas.draw()
         self.canvas.get_tk_widget().grid(row=0, column=0, columnspan=3, padx='5', pady='5', sticky='nesw')
+        
+        self.plot_range = tk.StringVar()
+        self.plot_range.set("2min")
+        
+        self.rbt_12h = tk.Radiobutton(self, text="12h", value="12h", variable=self.plot_range)
+        self.rbt_12h.grid(row=1, column=0, padx='5', pady='5', sticky='ew')
+
+        self.rbt_1h = tk.Radiobutton(self, text="1h", value="1h", variable=self.plot_range)
+        self.rbt_1h.grid(row=1, column=1, padx='5', pady='5', sticky='ew')
+
+        self.rbt_2min = tk.Radiobutton(self, text="2min", value="2min", variable=self.plot_range)
+        self.rbt_2min.grid(row=1, column=2, padx='5', pady='5', sticky='ew')
 
         self.lbl_text = tk.Label(self, text="")
-        self.lbl_text.grid(row=1, column=0, columnspan=3, padx='5', pady='5', sticky='nesw')
+        self.lbl_text.grid(row=2, column=0, columnspan=3, padx='5', pady='5', sticky='nesw')
 
         self.lbl_pwm = tk.Label(self, text="0-100%")
-        self.lbl_pwm.grid(row=2, column=0, padx='5', pady='5', sticky='ew')
+        self.lbl_pwm.grid(row=3, column=0, padx='5', pady='5', sticky='ew')
 
         self.etr_pwm = tk.Entry(self, text="", justify="right", width=10)
         self.etr_pwm.insert(0, '  0,  0,  0,  0,  0,  0,  0,  0')
-        self.etr_pwm.grid(row=2, column=1, padx='5', pady='5', sticky='ew')
+        self.etr_pwm.grid(row=3, column=1, padx='5', pady='5', sticky='ew')
 
         self.btn_pwm_set = tk.Button(self, text="Set PWM", state="disabled")
         self.btn_pwm_set.config(command=lambda: self.button_callback(self.btn_pwm_set))
-        self.btn_pwm_set.grid(row=2, column=2, padx='5', pady='5', sticky='ew')
+        self.btn_pwm_set.grid(row=3, column=2, padx='5', pady='5', sticky='ew')
         
-        # self.btn_voltage = tk.Button(self, text="Read Voltage", state="disabled")
-        # self.btn_voltage.config(command=lambda: self.button_callback(self.btn_voltage))
-        # self.btn_voltage.grid(row=3, column=0, padx='5', pady='5', sticky='ew')
-
-        # self.btn_current = tk.Button(self, text="Read Current", state="disabled")
-        # self.btn_current.config(command=lambda: self.button_callback(self.btn_current))
-        # self.btn_current.grid(row=3, column=1, padx='5', pady='5', sticky='ew')
-        
-        self.btn_close = tk.Button(self, text="Close", command=self.close)
-        self.btn_close.grid(row=3, column=0, columnspan=3, padx='5', pady='5', sticky='ew')
-
     def button_callback(self, button):
         if button == self.btn_pwm_set:
             self.btn_pwm_pressed = True
@@ -128,10 +140,10 @@ class MainWindow(tk.Tk):
         # self.lbl_text.config(text=string)
 
         for i in range(8):
-            self.plot_values_volt[i].pop(0)
-            self.plot_values_volt[i].append(float(string_split[i])/1000)
-            self.lines_volt[i].set_ydata(self.plot_values_volt[i])
-        self.canvas.draw()
+            self.values["voltage_2min"][i].pop(0)
+            self.values["voltage_2min"][i].append(float(string_split[i])/1000)
+        self.is_values_volt_ready = True
+        # self.canvas.draw()
         
     def current_callback(self, sender, data):
         string = data.decode()
@@ -141,10 +153,11 @@ class MainWindow(tk.Tk):
         # self.lbl_text.config(text=string)
 
         for i in range(8):
-            self.plot_values_curr[i].pop(0)
-            self.plot_values_curr[i].append(float(string_split[i])/1000)
-            self.lines_curr[i].set_ydata(self.plot_values_curr[i])
-        self.canvas.draw()
+            self.values["current_2min"][i].pop(0)
+            self.values["current_2min"][i].append(float(string_split[i])/1000)
+            self.lines_curr[i].set_ydata(self.values["current_2min"][i])
+        self.is_values_curr_ready = True
+        # self.canvas.draw()
 
     # def raw_callback(self, sender, data):
     #     number = data.pop(0)
@@ -215,8 +228,8 @@ class MainWindow(tk.Tk):
     async def run_pwm_button(self):
         if self.btn_pwm_pressed:
             self.btn_pwm_pressed = False
-            val = int(self.etr_pwm.get())
-            await self.client.write_gatt_char(uuids['iset'], val.to_bytes(2, 'little'))
+            val = self.etr_pwm.get()
+            await self.client.write_gatt_char(uuids['pwm_set'], val.encode())
 
     async def gui_loop(self):
         while True:
@@ -238,7 +251,7 @@ class MainWindow(tk.Tk):
             self.file.close()
         
         print("stopping loop")
-        self.loop.stop()
+        self.event_loop.stop()
         # self.gui_task.cancel()
         # self.connection_task.cancel()
 
@@ -262,6 +275,33 @@ class MainWindow(tk.Tk):
     async def application_loop(self):
         while not self.app_exit_flag:
             await self.run_pwm_button()
+            if self.is_values_volt_ready and self.is_values_curr_ready:
+                self.is_values_volt_ready = False
+                self.is_values_curr_ready = False
+                self.counter_seconds += 1
+                plot_range = self.plot_range.get()
+                for i in range(8):
+                    self.lines_volt[i].set_ydata(self.values[f"voltage_{plot_range}"][i])
+                    self.lines_curr[i].set_ydata(self.values[f"current_{plot_range}"][i])
+                self.canvas.draw()
+                if self.counter_seconds%30 == 0:
+                    for i in range(8):
+                        mean = sum(self.values["voltage_2min"][i][-30:])/30
+                        self.values["voltage_1h"][i].pop(0)
+                        self.values["voltage_1h"][i].append(mean)
+                        mean = sum(self.values["current_2min"][i][-30:])/30
+                        self.values["current_1h"][i].pop(0)
+                        self.values["current_1h"][i].append(mean)
+                    print(f"{self.counter_seconds}s: 2min->1h")
+                if self.counter_seconds%360 == 0:
+                    for i in range(8):
+                        mean = sum(self.values["voltage_1h"][i][-12:])/12
+                        self.values["voltage_12h"][i].pop(0)
+                        self.values["voltage_12h"][i].append(mean)
+                        mean = sum(self.values["current_1h"][i][-12:])/12
+                        self.values["current_12h"][i].pop(0)
+                        self.values["current_12h"][i].append(mean)
+                    print(f"{self.counter_seconds}s: 1h->12h")
             await asyncio.sleep(0.1)
 
     def close(self):
@@ -274,7 +314,7 @@ class MainWindow(tk.Tk):
 
 # Main function, executed when file is invoked directly.
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    MainWindow(loop)
-    loop.run_forever()
-    loop.close()
+    event_loop = asyncio.get_event_loop()
+    MainWindow(event_loop)
+    event_loop.run_forever()
+    event_loop.close()
