@@ -3,6 +3,7 @@ import tkinter as tk
 import asyncio
 from bleak import BleakClient, BleakScanner
 import time
+import struct
 import seaborn
 from datetime import datetime
 
@@ -13,17 +14,19 @@ from matplotlib.figure import Figure
         
 class MainWindow(tk.Tk):
 
-    def __init__(self, event_loop):
+    def __init__(self, event_loop, device_name):
         super().__init__()
         self.title("8-Cell Balancer")
         self.wm_iconphoto(True, tk.PhotoImage(file="icon_20.png"))
         width = 600
         height = 400
 
+        self.device_name = device_name
+
         self.btn_pwm_pressed = False
         self.app_exit_flag = False
-        self.is_values_curr_ready = False
-        self.is_values_volt_ready = False
+        self.is_values_ready = False
+        self.is_deviations_ready = False
         self.counter_seconds = 0
         self.device = None
         self.file = None
@@ -33,10 +36,11 @@ class MainWindow(tk.Tk):
         self.connection_task = self.event_loop.create_task(self.connection_loop())
 
         # Place in the middle of the screen
-        xpos = (self.winfo_screenwidth() - width) // 2
-        ypos = (self.winfo_screenheight() - height) // 2
-        # self.geometry(f"{width}x{height}+{xpos}+{ypos}")
-        self.geometry(f"{width}x{height}+{xpos+400}+{-600}")
+        xpos = 627 + (1280 - width) // 2
+        ypos = -720 + (720 - height) // 2
+        # xpos = (self.winfo_screenwidth() - width) // 2
+        # ypos = (self.winfo_screenheight() - height) // 2
+        self.geometry(f"{width}x{height}+{xpos}+{ypos}")
         self.resizable(False, False)
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
@@ -69,7 +73,8 @@ class MainWindow(tk.Tk):
             self.lines_curr[i], = axes_curr.plot(self.values["current_2min"][i], label=f'Cell {i+1}', color=colors[i])
 
         axes_volt.set_xlim(-1, 121)
-        axes_volt.set_ylim(3.15, 3.7)
+        # axes_volt.set_ylim(3.15, 3.7)
+        axes_volt.set_ylim(3.15, 4.15)
         axes_volt.grid()
 
         axes_curr.set_xlim(-1, 121)
@@ -132,98 +137,35 @@ class MainWindow(tk.Tk):
         self.canvas.draw()
 
 
-    def voltage_callback(self, sender, data):
-        string = data.decode()
-        print("voltage: " + string)
-        string_split = string.split(',')
-        # self.file.write(f"{string}\n")
-        # self.lbl_text.config(text=string)
+    def values_callback(self, sender, data):
+        values = struct.unpack(f'< {len(data)//2}h', data)
+        print(str(values)[1:-1])
 
         for i in range(8):
             self.values["voltage_2min"][i].pop(0)
-            self.values["voltage_2min"][i].append(float(string_split[i])/1000)
-        self.is_values_volt_ready = True
-        # self.canvas.draw()
-        
-    def current_callback(self, sender, data):
-        string = data.decode()
-        print("current: " + string)
-        string_split = string.split(',')
-        # self.file.write(f"{string}\n")
-        # self.lbl_text.config(text=string)
-
-        for i in range(8):
             self.values["current_2min"][i].pop(0)
-            self.values["current_2min"][i].append(float(string_split[i])/1000)
-            self.lines_curr[i].set_ydata(self.values["current_2min"][i])
-        self.is_values_curr_ready = True
+            self.values["voltage_2min"][i].append(float(values[2*i])/1000)
+            self.values["current_2min"][i].append(float(values[(2*i)+1])/1000)
+        self.is_values_ready = True
+        # self.canvas.draw()
+        
+    def deviations_callback(self, sender, data):
+        string = data.decode()
+        print("dev: " + string)
+        # string_split = string.split(',')
+        # # self.file.write(f"{string}\n")
+        # # self.lbl_text.config(text=string)
+
+        # for i in range(8):
+        #     self.values["current_2min"][i].pop(0)
+        #     self.values["current_2min"][i].append(float(string_split[i])/1000)
+        #     self.lines_curr[i].set_ydata(self.values["current_2min"][i])
+        # self.is_values_curr_ready = True
         # self.canvas.draw()
 
-    # def raw_callback(self, sender, data):
-    #     number = data.pop(0)
-    #     data.pop(0)
-        
-    #     values = [int.from_bytes(data[i:i+2], 'little', signed=True) for i in range(0, len(data), 2)]
-    #     for i in range(0, len(values), 8):
-    #         self.file.write(f"{values[i]*values[i+1]//1000:5},"
-    #                         f"{values[i]:5},{values[i+1]:5},"
-    #                         f"{values[i+2]:6},{values[i+3]:6},{values[i+4]:6},"
-    #                         f"{values[i+5]:6},{values[i+6]:6},{values[i+7]:6}\n")
-
-    #     self.file.flush()
-
-    #     if number == 0:
-    #         self.start = time.time()
-    #     if number == 249:
-    #         end = time.time()
-    #         print(f"Data transmitted in {end - self.start:.1f}s")
-    #     self.lbl_text.config(text=f"{number + 1}/250 Messages")
-
-    # async def run_voltage_button(self):
-    #     if self.btn_voltage_pressed:
-    #         self.btn_voltage_pressed = False
-            
-            # if not self.reading_active:
-            #     self.reading_active = True
-            #     self.btn_voltage.config(text="Stop")
-            #     self.btn_current.config(state="disabled")
-
-            #     self.file = open(f"buffer_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.csv", 'x')
-            #     data = await self.client.read_gatt_char(uuids['string'])
-            #     self.file.write(f"{data.decode()}\n")
-
-            #     await self.client.start_notify(uuids['raw'], self.raw_callback)
-            # else:
-            #     self.reading_active = False
-            #     self.btn_voltage.config(text="Read Buffer")
-            #     self.btn_current.config(state="normal")
-            #     await self.client.stop_notify(uuids['raw'])
-            #     self.file.close()
-            #     self.file = None
-
-    # async def run_current_button(self):
-    #     if self.btn_current_pressed:
-    #         self.btn_current_pressed = False
-    #         await self.client.start_notify(uuids['current'], self.current_callback)
-            # if not self.logging_active:
-            #     self.logging_active = True
-            #     self.btn_current.config(text="Stop Logging")
-            #     self.btn_voltage.config(state="disabled")
-
-            #     timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-            #     self.file = open("log_" + timestamp + ".csv", 'x')
-            #     data = await self.client.read_gatt_char(uuids['string'])
-            #     print(data.decode())
-            #     self.file.write(f"{data.decode()}\n")
-
-            #     await self.client.start_notify(uuids['string'], self.string_callback)
-            # else:
-            #     self.logging_active = False
-            #     self.btn_current.config(text="Start Logging")
-            #     self.btn_voltage.config(state="normal")
-            #     await self.client.stop_notify(uuids['string'])
-            #     self.file.close()
-            #     self.file = None
+    def history_1h_callback(self, sender, data):
+        values = struct.unpack(f'< {len(data)//2}h', data)
+        print(str(values)[1:-1])
 
     async def run_pwm_button(self):
         if self.btn_pwm_pressed:
@@ -239,7 +181,7 @@ class MainWindow(tk.Tk):
     async def connection_loop(self):
         while not self.app_exit_flag:
             self.lbl_text.config(text="scanning")
-            self.device = await BleakScanner.find_device_by_name("8-Cell Balancer", 1)
+            self.device = await BleakScanner.find_device_by_name(self.device_name, 1)
             print("scan timed out, restarting")
             if self.device:
                 self.lbl_text.config(text="connecting")
@@ -262,8 +204,8 @@ class MainWindow(tk.Tk):
             while not self.app_exit_flag:
                 self.lbl_text.config(text="connected")
                 self.btn_pwm_set.config(state="normal")
-                await self.client.start_notify(uuids['voltage'], self.voltage_callback)
-                await self.client.start_notify(uuids['current'], self.current_callback)
+                await self.client.start_notify(uuids['values'], self.values_callback)
+                await self.client.start_notify(uuids['1h_history'], self.history_1h_callback)
                 await self.application_loop()
         except Exception as e:
             print(f"Terminating with Exception {e}")
@@ -275,33 +217,13 @@ class MainWindow(tk.Tk):
     async def application_loop(self):
         while not self.app_exit_flag:
             await self.run_pwm_button()
-            if self.is_values_volt_ready and self.is_values_curr_ready:
-                self.is_values_volt_ready = False
-                self.is_values_curr_ready = False
-                self.counter_seconds += 1
+            if self.is_values_ready:
+                self.is_values_ready = False
                 plot_range = self.plot_range.get()
                 for i in range(8):
                     self.lines_volt[i].set_ydata(self.values[f"voltage_{plot_range}"][i])
                     self.lines_curr[i].set_ydata(self.values[f"current_{plot_range}"][i])
                 self.canvas.draw()
-                if self.counter_seconds%30 == 0:
-                    for i in range(8):
-                        mean = sum(self.values["voltage_2min"][i][-30:])/30
-                        self.values["voltage_1h"][i].pop(0)
-                        self.values["voltage_1h"][i].append(mean)
-                        mean = sum(self.values["current_2min"][i][-30:])/30
-                        self.values["current_1h"][i].pop(0)
-                        self.values["current_1h"][i].append(mean)
-                    print(f"{self.counter_seconds}s: 2min->1h")
-                if self.counter_seconds%360 == 0:
-                    for i in range(8):
-                        mean = sum(self.values["voltage_1h"][i][-12:])/12
-                        self.values["voltage_12h"][i].pop(0)
-                        self.values["voltage_12h"][i].append(mean)
-                        mean = sum(self.values["current_1h"][i][-12:])/12
-                        self.values["current_12h"][i].pop(0)
-                        self.values["current_12h"][i].append(mean)
-                    print(f"{self.counter_seconds}s: 1h->12h")
             await asyncio.sleep(0.1)
 
     def close(self):
@@ -315,6 +237,6 @@ class MainWindow(tk.Tk):
 # Main function, executed when file is invoked directly.
 if __name__ == "__main__":
     event_loop = asyncio.get_event_loop()
-    MainWindow(event_loop)
+    MainWindow(event_loop, "8-Cell Balancer2")
     event_loop.run_forever()
     event_loop.close()
