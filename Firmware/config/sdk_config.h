@@ -69,7 +69,7 @@
 #define NRF_SDH_BLE_CENTRAL_LINK_COUNT                        0
 #define NRF_SDH_BLE_TOTAL_LINK_COUNT                          1
 #define NRF_SDH_BLE_GAP_EVENT_LENGTH                          6
-#define NRF_SDH_BLE_GATT_MAX_MTU_SIZE                         (39 + 3)
+#define NRF_SDH_BLE_GATT_MAX_MTU_SIZE                         (192 + 3)  // max 247
 #define NRF_SDH_BLE_GATTS_ATTR_TAB_SIZE                       1408
 #define NRF_SDH_BLE_VS_UUID_COUNT                             10
 #define NRF_SDH_BLE_SERVICE_CHANGED                           0

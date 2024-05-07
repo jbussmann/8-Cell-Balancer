@@ -13,12 +13,13 @@ SRC_FILES += \
   $(PROJ_DIR)/adc.c \
   $(PROJ_DIR)/ble_services.c \
   $(PROJ_DIR)/bluetooth.c \
+  $(PROJ_DIR)/gpio.c \
   $(PROJ_DIR)/log.c \
   $(PROJ_DIR)/main.c \
   $(PROJ_DIR)/mux.c \
   $(PROJ_DIR)/pwm.c \
-  $(SDK_ROOT)/components/ble/common/ble_advdata.c \
   $(SDK_ROOT)/components/ble/ble_advertising/ble_advertising.c \
+  $(SDK_ROOT)/components/ble/common/ble_advdata.c \
   $(SDK_ROOT)/components/ble/common/ble_conn_params.c \
   $(SDK_ROOT)/components/ble/common/ble_srv_common.c \
   $(SDK_ROOT)/components/ble/nrf_ble_gatt/nrf_ble_gatt.c \
@@ -45,6 +46,7 @@ SRC_FILES += \
   $(SDK_ROOT)/external/fprintf/nrf_fprintf_format.c \
   $(SDK_ROOT)/external/fprintf/nrf_fprintf.c \
   $(SDK_ROOT)/integration/nrfx/legacy/nrf_drv_uart.c \
+  $(SDK_ROOT)/modules/nrfx/drivers/src/nrfx_gpiote.c \
   $(SDK_ROOT)/modules/nrfx/drivers/src/nrfx_ppi.c \
   $(SDK_ROOT)/modules/nrfx/drivers/src/nrfx_pwm.c \
   $(SDK_ROOT)/modules/nrfx/drivers/src/nrfx_saadc.c \

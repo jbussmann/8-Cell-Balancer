@@ -1,6 +1,6 @@
 #include "mux.h"
 
-#include "config/board.h"
+#include "board.h"
 #include "nrfx_ppi.h"
 #include "nrfx_pwm.h"
 

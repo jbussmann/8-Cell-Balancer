@@ -1,13 +1,14 @@
 #include "adc.h"
 
 #include "ble_services.h"
-#include "config/board.h"
-#include "config/sdk_config.h"
+#include "board.h"
 #include "mux.h"
 #include "nrf_saadc.h"
 #include "nrfx_ppi.h"
 #include "nrfx_saadc.h"
 #include "nrfx_timer.h"
+#include "pwm.h"
+#include "sdk_config.h"
 
 #define NRF_LOG_MODULE_NAME adc
 #include "log.h"
@@ -65,12 +66,29 @@ typedef struct {
 typedef struct {
   uint32_t voltage[NUMBER_OF_CELLS];
   uint32_t current[NUMBER_OF_CELLS];
-  uint32_t voltage_deviation[NUMBER_OF_CELLS];
-  uint32_t current_deviation[NUMBER_OF_CELLS];
+  uint32_t volt_dev[NUMBER_OF_CELLS];
+  uint32_t curr_dev[NUMBER_OF_CELLS];
   uint16_t length;
 } ble_values_t;
 
 static ble_values_t ble_values;
+
+#define HISTORY_BUFFER_ELEMENTS  120
+#define HISTORY_1H_INTERVALL     30
+#define HISTORY_12H_INTERVALL    360
+#define HISTORY_12H_1H_INTERVALL (HISTORY_12H_INTERVALL / HISTORY_1H_INTERVALL)
+
+static uint16_t history_2min_buffer[HISTORY_BUFFER_ELEMENTS][16] = {
+    [0 ... HISTORY_BUFFER_ELEMENTS - 1] = {[0 ... 15] = 0xffff}};
+static uint16_t history_1h_buffer[HISTORY_BUFFER_ELEMENTS][16] = {
+    [0 ... HISTORY_BUFFER_ELEMENTS - 1] = {[0 ... 15] = 0xffff}};
+static uint16_t history_12h_buffer[HISTORY_BUFFER_ELEMENTS][16] = {
+    [0 ... HISTORY_BUFFER_ELEMENTS - 1] = {[0 ... 15] = 0xffff}};
+
+// position of most recent data point
+static uint8_t history_2min_head = HISTORY_BUFFER_ELEMENTS - 1;
+static uint8_t history_1h_head = HISTORY_BUFFER_ELEMENTS - 1;
+static uint8_t history_12h_head = HISTORY_BUFFER_ELEMENTS - 1;
 
 static void adc_deinterlace_buffer(cell_t cells[],
                                    nrf_saadc_value_t *p_buffer) {
@@ -145,12 +163,12 @@ static void adc_add_values_to_ble_struct(cell_t cells[]) {
     ble_values.voltage[i] += cells[i].voltage.avg_value_millis;
     ble_values.current[i] += cells[i].current.avg_value_millis;
 
-    if (ble_values.voltage_deviation[i] < cells[i].voltage.deviation_millis) {
-      ble_values.voltage_deviation[i] = cells[i].voltage.deviation_millis;
+    if (ble_values.volt_dev[i] < cells[i].voltage.deviation_millis) {
+      ble_values.volt_dev[i] = cells[i].voltage.deviation_millis;
     }
 
-    if (ble_values.current_deviation[i] < cells[i].current.deviation_millis) {
-      ble_values.current_deviation[i] = cells[i].current.deviation_millis;
+    if (ble_values.curr_dev[i] < cells[i].current.deviation_millis) {
+      ble_values.curr_dev[i] = cells[i].current.deviation_millis;
     }
   }
   ble_values.length += 1;
@@ -163,41 +181,127 @@ static void adc_prepare_ble_transmission() {
   }
 }
 
+static void adc_log_values() {
+  static char voltage_string[47] = {};  // static for logger
+  snprintf(voltage_string,
+           sizeof(voltage_string),
+           "%4lu,%4lu,%4lu,%4lu,%4lu,%4lu,%4lu,%4lu",
+           ble_values.voltage[0],
+           ble_values.voltage[1],
+           ble_values.voltage[2],
+           ble_values.voltage[3],
+           ble_values.voltage[4],
+           ble_values.voltage[5],
+           ble_values.voltage[6],
+           ble_values.voltage[7]);
+  NRF_LOG_INFO("%s", voltage_string);
+
+  static char current_string[47] = {};  // static for logger
+  snprintf(current_string,
+           sizeof(current_string),
+           "%4lu,%4lu,%4lu,%4lu,%4lu,%4lu,%4lu,%4lu",
+           ble_values.current[0],
+           ble_values.current[1],
+           ble_values.current[2],
+           ble_values.current[3],
+           ble_values.current[4],
+           ble_values.current[5],
+           ble_values.current[6],
+           ble_values.current[7]);
+  NRF_LOG_INFO("%s", current_string);
+}
+
+static void adc_fill_history(uint16_t values_buffer[2 * NUMBER_OF_CELLS],
+                             uint16_t seconds) {
+  history_2min_head++;
+  history_2min_head %= HISTORY_BUFFER_ELEMENTS;
+  uint16_t *p_head = &history_2min_buffer[history_2min_head][0];
+  for (size_t i = 0; i < 2 * NUMBER_OF_CELLS; i++) {
+    *(p_head + i) = values_buffer[i];
+  }
+  NRF_LOG_INFO("%i: 2min buffer added @ pos%i", seconds, history_2min_head);
+
+  if (seconds % HISTORY_1H_INTERVALL == 0) {
+    history_1h_head++;
+    history_1h_head %= HISTORY_BUFFER_ELEMENTS;
+    for (size_t i = 0; i < NUMBER_OF_CELLS; i++) {
+      uint32_t sum_v = 0;
+      uint32_t sum_i = 0;
+      for (size_t k = 0; k < HISTORY_1H_INTERVALL; k++) {
+        sum_v += history_2min_buffer[history_2min_head - k][i];
+        sum_i += history_2min_buffer[history_2min_head - k][i + 1];
+      }
+      history_1h_buffer[history_1h_head][i] = sum_v / HISTORY_1H_INTERVALL;
+      history_1h_buffer[history_1h_head][i + 1] = sum_i / HISTORY_1H_INTERVALL;
+    }
+    NRF_LOG_INFO("%i: 1h buffer added @ pos%i", seconds, history_1h_head);
+  }
+
+  if (seconds % HISTORY_12H_INTERVALL == 0) {
+    history_12h_head++;
+    history_12h_head %= HISTORY_BUFFER_ELEMENTS;
+    for (size_t i = 0; i < NUMBER_OF_CELLS; i++) {
+      uint32_t sum_v = 0;
+      uint32_t sum_i = 0;
+      for (size_t k = 0; k < HISTORY_12H_1H_INTERVALL; k++) {
+        sum_v += history_1h_buffer[history_1h_head - k][i];
+        sum_i += history_1h_buffer[history_1h_head - k][i + 1];
+      }
+      history_12h_buffer[history_12h_head][i] =
+          sum_v / HISTORY_12H_1H_INTERVALL;
+      history_12h_buffer[history_12h_head][i + 1] =
+          sum_i / HISTORY_12H_1H_INTERVALL;
+    }
+    NRF_LOG_INFO("%i: 12h buffer added @ pos%i", seconds, history_12h_head);
+  }
+}
+
 static void adc_process_buffer(nrfx_saadc_done_evt_t done_event) {
   cell_t cells[NUMBER_OF_CELLS];
+  static uint16_t seconds_counter = 0;
 
   adc_deinterlace_buffer(cells, done_event.p_buffer);
   adc_aggregate_voltage(cells);
   adc_aggregate_current(cells);
 
-  // uint16_t cell_voltages[NUMBER_OF_CELLS];
-  // for (size_t i = 0; i < NUMBER_OF_CELLS; i++) {
-  //   cell_voltages[i] = cells[i].voltage.avg_value_millis;
-  // }
-  // pwm_set_values(cell_voltages);
+  uint16_t cell_voltages[NUMBER_OF_CELLS];
+  for (size_t i = 0; i < NUMBER_OF_CELLS; i++) {
+    cell_voltages[i] = cells[i].voltage.avg_value_millis;
+  }
+  pwm_calculate_next_values(cell_voltages);
 
   adc_add_values_to_ble_struct(cells);
 
   if (1000 <= ble_values.length) {
+    seconds_counter++;  // overflow is not handled!!
+
+    //       for i in range(8):
+    //     mean = sum(self.values["voltage_2min"][i][-nums:])/nums
+    //     self.values["voltage_1h"][i].pop(0)
+    //     self.values["voltage_1h"][i].append(mean)
+    //     mean = sum(self.values["current_2min"][i][-nums:])/nums
+    //     self.values["current_1h"][i].pop(0)
+    //     self.values["current_1h"][i].append(mean)
+    // print(f"{self.counter_seconds}s: {nums}nums 2min->1h")
+
     adc_prepare_ble_transmission();
-    static char value_string[47] = {};  // static for logger
-    snprintf(value_string,
-             sizeof(value_string),
-             "%4lu,%4lu,%4lu,%4lu,%4lu,%4lu,%4lu,%4lu (%i)",
-             ble_values.voltage[0],
-             ble_values.voltage[1],
-             ble_values.voltage[2],
-             ble_values.voltage[3],
-             ble_values.voltage[4],
-             ble_values.voltage[5],
-             ble_values.voltage[6],
-             ble_values.voltage[7],
-             ble_values.length);
-    NRF_LOG_INFO("%s", value_string);
-    ble_notify_cell_values(ble_values.voltage, VOLTAGE);
-    ble_notify_cell_values(ble_values.current, CURRENT);
-    // ble_notify_cell_values(values[8])
-    // ble_notify_cell_values(values[8])
+
+    static uint16_t values_buffer[(2 * NUMBER_OF_CELLS)] = {0};
+    static uint16_t deviations_buffer[(2 * NUMBER_OF_CELLS)] = {0};
+
+    adc_log_values();
+
+    for (size_t i = 0; i < NUMBER_OF_CELLS; i++) {
+      values_buffer[(2 * i)] = (uint16_t)ble_values.voltage[i];
+      values_buffer[(2 * i) + 1] = (uint16_t)ble_values.current[i];
+      deviations_buffer[(2 * i)] = (uint16_t)ble_values.volt_dev[i];
+      deviations_buffer[(2 * i) + 1] = (uint16_t)ble_values.curr_dev[i];
+    }
+
+    adc_fill_history(values_buffer, seconds_counter);
+
+    ble_notify_cell_values(values_buffer, VALUES);
+    ble_notify_cell_values(deviations_buffer, DEVIATIONS);
     memset(&ble_values, 0, sizeof(ble_values));
   }
 }

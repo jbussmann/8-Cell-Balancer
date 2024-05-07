@@ -5,7 +5,7 @@
 #include "ble_conn_params.h"
 #include "ble_gap.h"
 #include "ble_services.h"
-#include "config/board.h"
+#include "board.h"
 #include "nrf_ble_gatt.h"
 #include "nrf_ble_qwr.h"
 #include "nrf_log_ctrl.h"
@@ -13,20 +13,17 @@
 #include "nrf_sdh.h"
 #include "nrf_sdh_ble.h"
 #include "pwm.h"
-#include "stdlib.h"
 
 #define NRF_LOG_MODULE_NAME ble
 #include "log.h"
 NRF_LOG_MODULE_REGISTER();
 
-#define ADVERTISING_LED                LED_B_PIN
-#define CONNECTED_LED                  LED_G_PIN
-#define LEDBUTTON_LED                  LED_R_PIN
-
 #define DEVICE_NAME                    "8-Cell Balancer"
 
 #define APP_BLE_OBSERVER_PRIO          3
 #define APP_BLE_CONN_CFG_TAG           1
+
+#define HVN_TX_QUEUE_SIZE              20
 
 // in units of 0.625 ms
 #define APP_ADV_INTERVAL               64
@@ -37,8 +34,8 @@ NRF_LOG_MODULE_REGISTER();
 #define FAST_ADVERTISEMENT_INTERVAL    64
 #define SLOW_ADVERTISEMENT_INTERVAL    640
 // in units of 10 ms
-#define FAST_ADVERTISEMENT_DURATION    1000
-#define SLOW_ADVERTISEMENT_DURATION    1000
+#define FAST_ADVERTISEMENT_DURATION    3000
+#define SLOW_ADVERTISEMENT_DURATION    3000
 
 // GAP connection parameters
 // Minimum acceptable connection interval (0.5 seconds).
@@ -98,10 +95,19 @@ static void gatt_init(void) {
   ERROR_CHECK("gatt init", err_code);
 }
 
+static void advertising_start(void) {
+  ret_code_t err_code =
+      ble_advertising_start(&advertising_instance, BLE_ADV_MODE_FAST);
+  ERROR_CHECK("advertising start", err_code);
+}
+
 static void ble_adverting_handler(ble_adv_evt_t ble_adv_evt) {
+  nrf_gpio_pin_clear(ADVERTISE_LED);  // on
   switch (ble_adv_evt) {
     case BLE_ADV_EVT_IDLE:
       NRF_LOG_INFO("Advertising event: Idle");
+      nrf_gpio_pin_set(ADVERTISE_LED);  // off
+      advertising_start();
       break;
     case BLE_ADV_EVT_DIRECTED_HIGH_DUTY:
       NRF_LOG_INFO("Advertising event: Directed HD");
@@ -119,12 +125,6 @@ static void ble_adverting_handler(ble_adv_evt_t ble_adv_evt) {
       NRF_LOG_WARNING("Advertising event: 0x%x (%i)", ble_adv_evt, ble_adv_evt);
       break;
   }
-
-  if (ble_adv_evt == BLE_ADV_EVT_IDLE) {
-    nrf_gpio_pin_set(ADVERTISING_LED);
-  } else {
-    nrf_gpio_pin_clear(ADVERTISING_LED);
-  }
 }
 
 static void advertising_init(void) {
@@ -136,7 +136,7 @@ static void advertising_init(void) {
   init.advdata.include_appearance = true;
   init.advdata.flags = BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE;
   init.config.ble_adv_fast_enabled = true;
-  init.config.ble_adv_slow_enabled = true;
+  init.config.ble_adv_slow_enabled = false;
   init.config.ble_adv_fast_interval = FAST_ADVERTISEMENT_INTERVAL;
   init.config.ble_adv_fast_timeout = FAST_ADVERTISEMENT_DURATION;
   init.config.ble_adv_slow_interval = SLOW_ADVERTISEMENT_INTERVAL;
@@ -201,20 +201,28 @@ static void connection_init(void) {
   ERROR_CHECK("connection parameter init", err_code);
 }
 
-static void advertising_start(void) {
-  ret_code_t err_code =
-      ble_advertising_start(&advertising_instance, BLE_ADV_MODE_FAST);
-  ERROR_CHECK("advertising start", err_code);
-}
-
 static void on_gatts_event_write(ble_evt_t const *p_ble_evt) {
-  ble_gatts_evt_write_t const *gatts_evt_write =
-      &p_ble_evt->evt.gatts_evt.params.write;
-  uint16_t char_handle = gatts_evt_write->handle;
+  ble_gatts_evt_write_t const *p_evt = &p_ble_evt->evt.gatts_evt.params.write;
+  uint16_t attr_handle = p_evt->handle;
 
-  if (char_handle == service.pwm_set_handles.value_handle) {
+  if (attr_handle == service.values_handles.cccd_handle) {
+    NRF_LOG_INFO("values characteristic notify %s",
+                 p_evt->data[0] ? "enabled" : "disabled");
+  } else if (attr_handle == service.deviation_handles.cccd_handle) {
+    NRF_LOG_INFO("deviation characteristic notify %s",
+                 p_evt->data[0] ? "enabled" : "disabled");
+  } else if (attr_handle == service.history_12h_handles.cccd_handle) {
+    NRF_LOG_INFO("history 12h characteristic notify %s",
+                 p_evt->data[0] ? "enabled" : "disabled");
+  } else if (attr_handle == service.history_1h_handles.cccd_handle) {
+    NRF_LOG_INFO("history 1h characteristic notify %s",
+                 p_evt->data[0] ? "enabled" : "disabled");
+    if (p_evt->data[0]) {
+      ble_notify_1h_history();
+    }
+  } else if (attr_handle == service.pwm_set_handles.value_handle) {
     NRF_LOG_INFO("pwm characteristic written");
-    uint8_t const *p_data = gatts_evt_write->data;
+    uint8_t const *p_data = p_evt->data;
     uint16_t values[8];
     for (size_t i = 0; i < 8; i++) {
       char str[3 + 1] = {'\0'};
@@ -236,7 +244,7 @@ static void on_gatts_event_write(ble_evt_t const *p_ble_evt) {
     NRF_LOG_INFO("%s", value_string);
     pwm_update_values(values);
   } else {
-    NRF_LOG_WARNING("Unmapped characteristic written");
+    NRF_LOG_WARNING("Unmapped attribute written %i", attr_handle);
   }
 }
 
@@ -248,11 +256,14 @@ static void ble_event_handler(ble_evt_t const *p_ble_evt, void *p_context) {
     case BLE_GAP_EVT_CONNECTED:
       NRF_LOG_INFO("Stack event: Connected");
       nrf_gpio_pin_clear(CONNECTED_LED);
-      nrf_gpio_pin_set(ADVERTISING_LED);
+      nrf_gpio_pin_set(ADVERTISE_LED);
       service.connection_handle = p_ble_evt->evt.gap_evt.conn_handle;
       err_code = nrf_ble_qwr_conn_handle_assign(&qwr_instance,
                                                 service.connection_handle);
       ERROR_CHECK("qwr connection handle assign", err_code);
+      err_code =
+          sd_ble_gatts_sys_attr_set(service.connection_handle, NULL, 0, 0);
+      ERROR_CHECK("system attribute set", err_code);
       break;
     case BLE_GAP_EVT_DISCONNECTED:
       NRF_LOG_INFO("Stack event: Disconnected");
@@ -313,9 +324,17 @@ static void soft_device_init(void) {
   err_code = nrf_sdh_ble_default_cfg_set(APP_BLE_CONN_CFG_TAG, &ram_start);
   ERROR_CHECK("sdh ble default config set", err_code);
 
+  // configure HVN tx buffer size
+  ble_cfg_t ble_cfg;
+  memset(&ble_cfg, 0, sizeof(ble_cfg));
+  ble_cfg.conn_cfg.conn_cfg_tag = APP_BLE_CONN_CFG_TAG;
+  ble_cfg.conn_cfg.params.gatts_conn_cfg.hvn_tx_queue_size = HVN_TX_QUEUE_SIZE;
+  err_code = sd_ble_cfg_set(BLE_CONN_CFG_GATTS, &ble_cfg, ram_start);
+  ERROR_CHECK("sdh ble custom config set", err_code);
+
   // Enable BLE stack.
   err_code = nrf_sdh_ble_enable(&ram_start);
-  ERROR_CHECK("sdh ble enable (enable sdh logs)", err_code);
+  ERROR_CHECK("sdh ble enable (enable sdh_ble logs)", err_code);
 
   // Register a handler for BLE events.
   NRF_SDH_BLE_OBSERVER(
