@@ -25,7 +25,7 @@ int main(void) {
   adc_init();
 
   pwm_start();
-  mux_pwm_start();
+  mux_pwm_adc_start();
 
   // Enter main loop.
   for (;;) {

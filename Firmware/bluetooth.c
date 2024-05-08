@@ -6,6 +6,7 @@
 #include "ble_gap.h"
 #include "ble_services.h"
 #include "board.h"
+#include "history.h"
 #include "nrf_ble_gatt.h"
 #include "nrf_ble_qwr.h"
 #include "nrf_log_ctrl.h"
@@ -211,15 +212,15 @@ static void on_gatts_event_write(ble_evt_t const *p_ble_evt) {
   } else if (attr_handle == service.deviation_handles.cccd_handle) {
     NRF_LOG_INFO("deviation characteristic notify %s",
                  p_evt->data[0] ? "enabled" : "disabled");
-  } else if (attr_handle == service.history_12h_handles.cccd_handle) {
-    NRF_LOG_INFO("history 12h characteristic notify %s",
-                 p_evt->data[0] ? "enabled" : "disabled");
   } else if (attr_handle == service.history_1h_handles.cccd_handle) {
     NRF_LOG_INFO("history 1h characteristic notify %s",
                  p_evt->data[0] ? "enabled" : "disabled");
     if (p_evt->data[0]) {
-      ble_notify_1h_history();
+      history_notify_1h();
     }
+  } else if (attr_handle == service.history_12h_handles.cccd_handle) {
+    NRF_LOG_INFO("history 12h characteristic notify %s",
+                 p_evt->data[0] ? "enabled" : "disabled");
   } else if (attr_handle == service.pwm_set_handles.value_handle) {
     NRF_LOG_INFO("pwm characteristic written");
     uint8_t const *p_data = p_evt->data;

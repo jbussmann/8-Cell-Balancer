@@ -35,7 +35,8 @@ static const nrf_pwm_sequence_t pwm_sequence = {
     .repeats = PWM_REPEATS,
     .end_delay = PWM_END_DELAY};
 
-void mux_pwm_start(void) {
+void mux_pwm_adc_start(void) {
+  // PPI triggers SAADC sampling
   nrfx_pwm_simple_playback(
       &pwm2_instance_mux, &pwm_sequence, PWM_PLAYBACKS, NRFX_PWM_FLAG_LOOP);
 }

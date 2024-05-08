@@ -13,7 +13,9 @@ SRC_FILES += \
   $(PROJ_DIR)/adc.c \
   $(PROJ_DIR)/ble_services.c \
   $(PROJ_DIR)/bluetooth.c \
+  $(PROJ_DIR)/data.c \
   $(PROJ_DIR)/gpio.c \
+  $(PROJ_DIR)/history.c \
   $(PROJ_DIR)/log.c \
   $(PROJ_DIR)/main.c \
   $(PROJ_DIR)/mux.c \

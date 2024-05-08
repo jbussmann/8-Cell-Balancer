@@ -1,7 +1,8 @@
 #ifndef ADC_H
 #define ADC_H
 
-#include "stdint.h"
+// max 12bit otherwise danger of type overflow!
+#define ADC_RESOLUTON NRF_SAADC_RESOLUTION_12BIT
 
 void adc_init(void);
 
