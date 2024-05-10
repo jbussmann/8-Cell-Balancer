@@ -11,7 +11,7 @@ from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
 from matplotlib.figure import Figure
 
-        
+
 class MainWindow(tk.Tk):
 
     def __init__(self, event_loop, device_name):
@@ -50,7 +50,7 @@ class MainWindow(tk.Tk):
         self['bg'] = '#fbe5d6'
         self['bd'] = 5
 
-        # matpotlib figure for plotting 
+        # matpotlib figure for plotting
         self.figure = Figure(constrained_layout=True)
         axes_volt, axes_curr = self.figure.subplots(2, 1)
         self.values = {
@@ -82,15 +82,15 @@ class MainWindow(tk.Tk):
         axes_curr.grid()
 
         self.legend = self.figure.legend(handles=self.lines_volt, loc='outside center right', labelspacing=1.3, handlelength=0, labelcolor='linecolor', edgecolor='None')
-        
+
         # place plot
         self.canvas = FigureCanvasTkAgg(self.figure, master=self)
         self.canvas.draw()
         self.canvas.get_tk_widget().grid(row=0, column=0, columnspan=3, padx='5', pady='5', sticky='nesw')
-        
+
         self.plot_range = tk.StringVar()
         self.plot_range.set("2min")
-        
+
         self.rbt_12h = tk.Radiobutton(self, text="12h", value="12h", variable=self.plot_range)
         self.rbt_12h.grid(row=1, column=0, padx='5', pady='5', sticky='ew')
 
@@ -113,28 +113,28 @@ class MainWindow(tk.Tk):
         self.btn_pwm_set = tk.Button(self, text="Set PWM", state="disabled")
         self.btn_pwm_set.config(command=lambda: self.button_callback(self.btn_pwm_set))
         self.btn_pwm_set.grid(row=3, column=2, padx='5', pady='5', sticky='ew')
-        
+
     def button_callback(self, button):
         if button == self.btn_pwm_set:
             self.btn_pwm_pressed = True
 
-    def string_callback(self, sender, data):
-        string = data.decode()
-        string_split = string.split(',')
-        print(string)
-        self.file.write(f"{string}\n")
-        self.lbl_text.config(text=string)
+    # def string_callback(self, sender, data):
+    #     string = data.decode()
+    #     string_split = string.split(',')
+    #     print(string)
+    #     self.file.write(f"{string}\n")
+    #     self.lbl_text.config(text=string)
 
-        self.plot_values_pow.pop(0)
-        self.plot_values_vdc.pop(0)
-        self.plot_values_idc.pop(0)
-        self.plot_values_pow.append(float(string_split[0])/1000)
-        self.plot_values_vdc.append(float(string_split[1])/1000)
-        self.plot_values_idc.append(float(string_split[2])/1000)
-        self.line_pow.set_ydata(self.plot_values_pow)
-        self.line_vdc.set_ydata(self.plot_values_vdc)
-        self.line_idc.set_ydata(self.plot_values_idc)
-        self.canvas.draw()
+    #     self.plot_values_pow.pop(0)
+    #     self.plot_values_vdc.pop(0)
+    #     self.plot_values_idc.pop(0)
+    #     self.plot_values_pow.append(float(string_split[0])/1000)
+    #     self.plot_values_vdc.append(float(string_split[1])/1000)
+    #     self.plot_values_idc.append(float(string_split[2])/1000)
+    #     self.line_pow.set_ydata(self.plot_values_pow)
+    #     self.line_vdc.set_ydata(self.plot_values_vdc)
+    #     self.line_idc.set_ydata(self.plot_values_idc)
+    #     self.canvas.draw()
 
 
     def values_callback(self, sender, data):
@@ -148,7 +148,7 @@ class MainWindow(tk.Tk):
             self.values["current_2min"][i].append(float(values[(2*i)+1])/1000)
         self.is_values_ready = True
         # self.canvas.draw()
-        
+
     def deviations_callback(self, sender, data):
         string = data.decode()
         print("dev: " + string)
@@ -164,8 +164,20 @@ class MainWindow(tk.Tk):
         # self.canvas.draw()
 
     def history_1h_callback(self, sender, data):
-        values = struct.unpack(f'< {len(data)//2}h', data)
-        print(str(values)[1:-1])
+        values_packed = struct.unpack(f'< {len(data)//2}h', data)
+        # values_grouped = [None] * (len(values_packed)//16)
+
+        for i in range(len(values_packed)//16):
+            values = values_packed[16*i:16*i+16]
+
+            if 0 < values[0]:
+                for k in range(8):
+                    self.values["voltage_1h"][k].pop(0)
+                    self.values["current_1h"][k].pop(0)
+                    self.values["voltage_1h"][k].append(float(values[2*k])/1000)
+                    self.values["current_1h"][k].append(float(values[(2*k)+1])/1000)
+
+            print(f"{i}: {values}")
 
     async def run_pwm_button(self):
         if self.btn_pwm_pressed:
@@ -191,7 +203,7 @@ class MainWindow(tk.Tk):
         if self.file:
             print("force close file")
             self.file.close()
-        
+
         print("stopping loop")
         self.event_loop.stop()
         # self.gui_task.cancel()
@@ -237,6 +249,6 @@ class MainWindow(tk.Tk):
 # Main function, executed when file is invoked directly.
 if __name__ == "__main__":
     event_loop = asyncio.get_event_loop()
-    MainWindow(event_loop, "8-Cell Balancer2")
+    MainWindow(event_loop, "8-Cell Balancer")
     event_loop.run_forever()
     event_loop.close()

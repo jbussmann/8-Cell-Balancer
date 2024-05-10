@@ -23,9 +23,7 @@ NRF_LOG_MODULE_REGISTER();
 #define BLE_PWM_SET_CHAR_UUID     0xAB05
 
 // 2 bytes * (8 voltages + 8 currents)
-#define BLE_VALUE_CHAR_LENGTH     (2 * (8 + 8))
-// 2 bytes * (8 voltages + 8 currents) * 6 data points per notification
-#define BLE_HISTORY_CHAR_LENGTH   (2 * (8 + 8) * 6)
+#define BLE_VALUE_CHAR_LENGTH     (sizeof(uint16_t) * (8 + 8))
 // (8 values * 3 characters) + 7 commas
 #define BLE_PWM_CHAR_LENGTH       ((8 * 3) + 7)
 
@@ -61,8 +59,16 @@ bool is_notification_enabled(uint8_t type) {
   return ble_srv_is_notification_enabled(cccd_value);
 }
 
-void ble_notify_history_values(uint16_t values[16], uint8_t type) {
+void ble_notify_history_values(uint16_t values[], uint8_t type) {
   ble_os_t *p_service = ble_get_service();
+
+  if (p_service->connection_handle == BLE_CONN_HANDLE_INVALID) {
+    return;
+  }
+
+  if (!is_notification_enabled(type)) {
+    return;
+  }
 
   uint16_t len = BLE_HISTORY_CHAR_LENGTH;
   ble_gatts_hvx_params_t hvx_params;
@@ -83,10 +89,10 @@ void ble_notify_history_values(uint16_t values[16], uint8_t type) {
 
   uint32_t err_code =
       sd_ble_gatts_hvx(p_service->connection_handle, &hvx_params);
-  ERROR_CHECK("value char notify", err_code);
+  ERROR_CHECK("history char notify", err_code);
 }
 
-void ble_notify_cell_values(uint16_t values[16], uint8_t type) {
+void ble_notify_cell_values(uint16_t values[], uint8_t type) {
   ble_os_t *p_service = ble_get_service();
 
   if (p_service->connection_handle == BLE_CONN_HANDLE_INVALID) {
@@ -119,6 +125,7 @@ void ble_notify_cell_values(uint16_t values[16], uint8_t type) {
   ERROR_CHECK("value char notify", err_code);
 }
 
+// could be refactored into a single function
 static void ble_values_char_add(ble_os_t *p_service) {
   uint32_t err_code;
   ble_uuid_t char_uuid;

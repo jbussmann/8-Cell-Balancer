@@ -189,22 +189,22 @@ void data_process_buffer(nrf_saadc_value_t *p_buffer) {
 
     data_prepare_ble_transmission();
 
-    static uint16_t values_buffer[(2 * NUMBER_OF_CELLS)] = {0};
-    static uint16_t deviations_buffer[(2 * NUMBER_OF_CELLS)] = {0};
+    static uint16_t val_buffer[(sizeof(uint16_t) * NUMBER_OF_CELLS)] = {0};
+    static uint16_t dev_buffer[(sizeof(uint16_t) * NUMBER_OF_CELLS)] = {0};
 
     data_log_values();
 
     for (size_t i = 0; i < NUMBER_OF_CELLS; i++) {
-      values_buffer[(2 * i)] = (uint16_t)ble_values.voltage[i];
-      values_buffer[(2 * i) + 1] = (uint16_t)ble_values.current[i];
-      deviations_buffer[(2 * i)] = (uint16_t)ble_values.volt_dev[i];
-      deviations_buffer[(2 * i) + 1] = (uint16_t)ble_values.curr_dev[i];
+      val_buffer[(2 * i)] = (uint16_t)ble_values.voltage[i];
+      val_buffer[(2 * i) + 1] = (uint16_t)ble_values.current[i];
+      dev_buffer[(2 * i)] = (uint16_t)ble_values.volt_dev[i];
+      dev_buffer[(2 * i) + 1] = (uint16_t)ble_values.curr_dev[i];
     }
 
-    history_fill_buffer(values_buffer, seconds_counter);
+    history_fill_buffer(val_buffer, seconds_counter);
 
-    ble_notify_cell_values(values_buffer, VALUES);
-    ble_notify_cell_values(deviations_buffer, DEVIATIONS);
+    ble_notify_cell_values(val_buffer, VALUES);
+    ble_notify_cell_values(dev_buffer, DEVIATIONS);
     memset(&ble_values, 0, sizeof(ble_values));
   }
 }
