@@ -178,15 +178,6 @@ void data_process_buffer(nrf_saadc_value_t *p_buffer) {
   if (1000 <= ble_values.length) {
     seconds_counter++;  // overflow is not handled!!
 
-    //       for i in range(8):
-    //     mean = sum(self.values["voltage_2min"][i][-nums:])/nums
-    //     self.values["voltage_1h"][i].pop(0)
-    //     self.values["voltage_1h"][i].append(mean)
-    //     mean = sum(self.values["current_2min"][i][-nums:])/nums
-    //     self.values["current_1h"][i].pop(0)
-    //     self.values["current_1h"][i].append(mean)
-    // print(f"{self.counter_seconds}s: {nums}nums 2min->1h")
-
     data_prepare_ble_transmission();
 
     static uint16_t val_buffer[(sizeof(uint16_t) * NUMBER_OF_CELLS)] = {0};

@@ -216,11 +216,14 @@ static void on_gatts_event_write(ble_evt_t const *p_ble_evt) {
     NRF_LOG_INFO("history 1h characteristic notify %s",
                  p_evt->data[0] ? "enabled" : "disabled");
     if (p_evt->data[0]) {
-      history_notify_1h(true);
+      history_notify_1h_full();
     }
   } else if (attr_handle == service.history_12h_handles.cccd_handle) {
     NRF_LOG_INFO("history 12h characteristic notify %s",
                  p_evt->data[0] ? "enabled" : "disabled");
+    if (p_evt->data[0]) {
+      history_notify_12h_full();
+    }
   } else if (attr_handle == service.pwm_set_handles.value_handle) {
     NRF_LOG_INFO("pwm characteristic written");
     uint8_t const *p_data = p_evt->data;

@@ -24,54 +24,37 @@ static uint8_t history_2min_head = HISTORY_BUFFER_ELEMENTS - 1;
 static uint8_t history_1h_head = HISTORY_BUFFER_ELEMENTS - 1;
 static uint8_t history_12h_head = HISTORY_BUFFER_ELEMENTS - 1;
 
-void history_notify_1h(bool full) {
+static void history_notify(uint16_t p_buffer[][16],
+                           uint8_t* p_head,
+                           uint8_t type,
+                           bool full) {
   uint16_t values[BLE_HISTORY_CHAR_LENGTH / sizeof(uint16_t)] = {[0 ... 95] =
                                                                      0xffff};
 
   if (full) {
     for (size_t i = 0; i < HISTORY_BUFFER_ELEMENTS; i++) {
-      uint8_t pos = history_1h_head + i + 1;
+      uint8_t pos = *p_head + i + 1;
       pos %= HISTORY_BUFFER_ELEMENTS;
 
-      memcpy(
-          &values[16 * (i % 6)], history_1h_buffer[pos], sizeof(uint16_t) * 16);
-      values[(16 * (i % 6)) + 15] = pos;
+      memcpy(&values[16 * (i % 6)], p_buffer[pos], sizeof(uint16_t) * 16);
 
       if (i % 6 == 5) {
-        ble_notify_history_values(values, HISTORY_1H);
+        ble_notify_history_values(values, type);
       }
     }
   } else {
-    memcpy(values, history_1h_buffer[history_1h_head], sizeof(uint16_t) * 16);
-    values[15] = history_1h_head;
-    ble_notify_history_values(values, HISTORY_1H);
+    memcpy(values, p_buffer[*p_head], sizeof(uint16_t) * 16);
+    ble_notify_history_values(values, type);
   }
 }
 
-// void history_notify_12h(void) {
-//   uint16_t values[96] = {[0 ... 95] = 42};
-//   for (size_t i = 0; i < 20; i++) {
-//     ble_notify_history_values(values, HISTORY_12H);
-//   }
-// }
+void history_notify_1h_full() {
+  history_notify(history_1h_buffer, &history_1h_head, HISTORY_1H, true);
+}
 
-// static void history_aggregate_1h(void) {
-//   history_1h_head++;
-//   history_1h_head %= HISTORY_BUFFER_ELEMENTS;
-
-//   for (size_t i = 0; i < NUMBER_OF_CELLS; i++) {
-//     uint32_t sum_v = 0;
-//     uint32_t sum_i = 0;
-//     for (size_t k = 0; k < HISTORY_1H_INTERVAL; k++) {
-//       sum_v += history_2min_buffer[history_2min_head - k][2 * i];  //
-//       underflow? sum_i += history_2min_buffer[history_2min_head - k][2 * i +
-//       1];
-//     }
-//     history_1h_buffer[history_1h_head][2 * i] = sum_v / HISTORY_1H_INTERVAL;
-//     history_1h_buffer[history_1h_head][2 * i + 1] = sum_i /
-//     HISTORY_1H_INTERVAL;
-//   }
-// }
+void history_notify_12h_full() {
+  history_notify(history_12h_buffer, &history_12h_head, HISTORY_12H, true);
+}
 
 static void history_aggregate(uint16_t p_srcbuff[][16],
                               uint8_t* p_srchead,
@@ -93,23 +76,6 @@ static void history_aggregate(uint16_t p_srcbuff[][16],
   }
 }
 
-// static void history_aggregate_12h(void) {
-//   history_12h_head++;
-//   history_12h_head %= HISTORY_BUFFER_ELEMENTS;
-//   for (size_t i = 0; i < NUMBER_OF_CELLS; i++) {
-//     uint32_t sum_v = 0;
-//     uint32_t sum_i = 0;
-//     for (size_t k = 0; k < HISTORY_12H_1H_INTERVAL; k++) {
-//       sum_v += history_1h_buffer[history_1h_head - k][2 * i];
-//       sum_i += history_1h_buffer[history_1h_head - k][2 * i + 1];
-//     }
-//     history_12h_buffer[history_12h_head][2 * i] =
-//         sum_v / HISTORY_12H_1H_INTERVAL;
-//     history_12h_buffer[history_12h_head][2 * i + 1] =
-//         sum_i / HISTORY_12H_1H_INTERVAL;
-//   }
-// }
-
 void history_fill_buffer(uint16_t values_buffer[2 * NUMBER_OF_CELLS],
                          uint16_t seconds) {
   history_2min_head++;
@@ -126,7 +92,7 @@ void history_fill_buffer(uint16_t values_buffer[2 * NUMBER_OF_CELLS],
                       history_1h_buffer,
                       &history_1h_head,
                       (uint16_t)HISTORY_1H_INTERVAL);
-    history_notify_1h(false);
+    history_notify(history_1h_buffer, &history_1h_head, HISTORY_1H, false);
     NRF_LOG_INFO("%i: 1h buffer added @ pos%i", seconds, history_1h_head);
   }
 
@@ -136,6 +102,7 @@ void history_fill_buffer(uint16_t values_buffer[2 * NUMBER_OF_CELLS],
                       history_12h_buffer,
                       &history_12h_head,
                       (uint16_t)HISTORY_12H_1H_INTERVAL);
+    history_notify(history_12h_buffer, &history_12h_head, HISTORY_12H, false);
     NRF_LOG_INFO("%i: 12h buffer added @ pos%i", seconds, history_12h_head);
   }
 }
