@@ -2,13 +2,11 @@ from UUIDs import uuids
 import tkinter as tk
 import asyncio
 from bleak import BleakClient, BleakScanner
-import time
 import struct
 import seaborn
-from datetime import datetime
+import screeninfo
 
-from matplotlib.backends.backend_tkagg import (
-    FigureCanvasTkAgg, NavigationToolbar2Tk)
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
 
 
@@ -16,10 +14,12 @@ class MainWindow(tk.Tk):
 
     def __init__(self, event_loop, device_name):
         super().__init__()
+        scaling = 1
         self.title("8-Cell Balancer")
-        self.wm_iconphoto(True, tk.PhotoImage(file="icon_20.png"))
-        width = 600
-        height = 400
+        # self.wm_iconphoto(True, tk.PhotoImage(file="icon_20.png"))
+        self.tk.call('tk', 'scaling', scaling)
+        width = 600*scaling
+        height = 400*scaling
 
         self.device_name = device_name
 
@@ -39,10 +39,14 @@ class MainWindow(tk.Tk):
         self.connection_task = self.event_loop.create_task(self.connection_loop())
 
         # Place in the middle of the screen
-        xpos = 627 + (1280 - width) // 2
-        ypos = -720 + (720 - height) // 2
-        # xpos = (self.winfo_screenwidth() - width) // 2
-        # ypos = (self.winfo_screenheight() - height) // 2
+        monitors = screeninfo.get_monitors()
+        # print(monitors)
+        if 1 < len(monitors):
+            xpos = monitors[1].x + (monitors[1].width - width) // 2
+            ypos = monitors[1].y + (monitors[1].height - height) // 2
+        else:
+            xpos = (self.winfo_screenwidth() - width) // 2
+            ypos = (self.winfo_screenheight() - height) // 2
         self.geometry(f"{width}x{height}+{xpos}+{ypos}")
         self.resizable(False, False)
         self.rowconfigure(0, weight=1)
@@ -50,11 +54,11 @@ class MainWindow(tk.Tk):
         self.columnconfigure(1, weight=1)
         self.columnconfigure(2, weight=1)
 
-        self['bg'] = '#fbe5d6'
-        self['bd'] = 5
+        self["bg"] = "#fbe5d6"
+        self["bd"] = 5
 
         # matpotlib figure for plotting
-        self.figure = Figure(constrained_layout=True)
+        self.figure = Figure(constrained_layout=True, dpi=100*scaling)
         axes_volt, axes_curr = self.figure.subplots(2, 1)
         self.values = {
             "voltage_12h": None,
@@ -62,7 +66,7 @@ class MainWindow(tk.Tk):
             "voltage_2min": None,
             "current_12h": None,
             "current_1h": None,
-            "current_2min": None
+            "current_2min": None,
         }
         for i in self.values:
             self.values[i] = [[None] * 121 for _ in range(8)]
@@ -72,8 +76,12 @@ class MainWindow(tk.Tk):
         self.lines_curr = [None] * 8
 
         for i in range(8):
-            self.lines_volt[i], = axes_volt.plot(self.values["voltage_2min"][i], label=f'Cell {i+1}', color=colors[i])
-            self.lines_curr[i], = axes_curr.plot(self.values["current_2min"][i], label=f'Cell {i+1}', color=colors[i])
+            (self.lines_volt[i],) = axes_volt.plot(
+                self.values["voltage_2min"][i], label=f"Cell {i+1}", color=colors[i]
+            )
+            (self.lines_curr[i],) = axes_curr.plot(
+                self.values["current_2min"][i], label=f"Cell {i+1}", color=colors[i]
+            )
 
         axes_volt.set_xlim(-1, 121)
         # axes_volt.set_ylim(3.15, 3.7)
@@ -84,42 +92,58 @@ class MainWindow(tk.Tk):
         axes_curr.set_ylim(-0.02, 0.25)
         axes_curr.grid()
 
-        self.legend = self.figure.legend(handles=self.lines_volt, loc='outside center right', labelspacing=1.3, handlelength=0, labelcolor='linecolor', edgecolor='None')
+        self.legend = self.figure.legend(
+            handles=self.lines_volt,
+            loc="outside center right",
+            labelspacing=1.3,
+            handlelength=0,
+            labelcolor="linecolor",
+            edgecolor="None",
+        )
 
         # place plot
         self.canvas = FigureCanvasTkAgg(self.figure, master=self)
         self.canvas.draw()
-        self.canvas.get_tk_widget().grid(row=0, column=0, columnspan=3, padx='5', pady='5', sticky='nesw')
+        self.canvas.get_tk_widget().grid(
+            row=0, column=0, columnspan=3, padx="5", pady="5", sticky="nesw"
+        )
 
         self.plot_range = tk.StringVar()
         self.plot_range.set("2min")
 
-        self.rbt_12h = tk.Radiobutton(self, text="12h", value="12h", variable=self.plot_range)
+        self.rbt_12h = tk.Radiobutton(
+            self, text="12h", value="12h", variable=self.plot_range
+        )
         self.rbt_12h.config(command=lambda: self.button_callback(self.rbt_12h))
-        self.rbt_12h.grid(row=1, column=0, padx='5', pady='5', sticky='ew')
+        self.rbt_12h.grid(row=1, column=0, padx="5", pady="5", sticky="ew")
 
-        self.rbt_1h = tk.Radiobutton(self, text="1h", value="1h", variable=self.plot_range)
+        self.rbt_1h = tk.Radiobutton(
+            self, text="1h", value="1h", variable=self.plot_range
+        )
         self.rbt_1h.config(command=lambda: self.button_callback(self.rbt_1h))
-        self.rbt_1h.grid(row=1, column=1, padx='5', pady='5', sticky='ew')
+        self.rbt_1h.grid(row=1, column=1, padx="5", pady="5", sticky="ew")
 
-        self.rbt_2min = tk.Radiobutton(self, text="2min", value="2min", variable=self.plot_range)
+        self.rbt_2min = tk.Radiobutton(
+            self, text="2min", value="2min", variable=self.plot_range
+        )
         self.rbt_2min.config(command=lambda: self.button_callback(self.rbt_2min))
-        self.rbt_2min.grid(row=1, column=2, padx='5', pady='5', sticky='ew')
+        self.rbt_2min.grid(row=1, column=2, padx="5", pady="5", sticky="ew")
 
         self.lbl_text = tk.Label(self, text="")
-        self.lbl_text.grid(row=2, column=0, columnspan=3, padx='5', pady='5', sticky='nesw')
+        self.lbl_text.grid(
+            row=2, column=0, columnspan=3, padx="5", pady="5", sticky="nesw"
+        )
 
         self.lbl_pwm = tk.Label(self, text="0-100%")
-        self.lbl_pwm.grid(row=3, column=0, padx='5', pady='5', sticky='ew')
+        self.lbl_pwm.grid(row=3, column=0, padx="5", pady="5", sticky="ew")
 
         self.etr_pwm = tk.Entry(self, text="", justify="right", width=10)
-        self.etr_pwm.insert(0, '  0,  0,  0,  0,  0,  0,  0,  0')
-        self.etr_pwm.grid(row=3, column=1, padx='5', pady='5', sticky='ew')
+        self.etr_pwm.insert(0, " 00, 00, 00, 00, 00, 00, 00, 00")
+        self.etr_pwm.grid(row=3, column=1, padx="5", pady="5", sticky="ew")
 
         self.btn_pwm_set = tk.Button(self, text="Set PWM", state="disabled")
         self.btn_pwm_set.config(command=lambda: self.button_callback(self.btn_pwm_set))
-        self.btn_pwm_set.grid(row=3, column=2, padx='5', pady='5', sticky='ew')
-
+        self.btn_pwm_set.grid(row=3, column=2, padx="5", pady="5", sticky="ew")
 
     def button_callback(self, button):
         if button == self.btn_pwm_set:
@@ -137,16 +161,15 @@ class MainWindow(tk.Tk):
             else:
                 self.rbt_12h_pressed = True
 
-
     def values_callback(self, sender, data):
-        values = struct.unpack(f'< {len(data)//2}h', data)
+        values = struct.unpack(f"< {len(data)//2}h", data)
         print(str(values)[1:-1])
 
         for i in range(8):
             self.values["voltage_2min"][i].pop(0)
             self.values["current_2min"][i].pop(0)
-            self.values["voltage_2min"][i].append(float(values[2*i])/1000)
-            self.values["current_2min"][i].append(float(values[(2*i)+1])/1000)
+            self.values["voltage_2min"][i].append(float(values[2 * i]) / 1000)
+            self.values["current_2min"][i].append(float(values[(2 * i) + 1]) / 1000)
         self.is_values_ready = True
         # self.canvas.draw()
 
@@ -165,34 +188,37 @@ class MainWindow(tk.Tk):
         # self.canvas.draw()
 
     def history_callback(self, sender, data):
-        if sender.uuid == uuids['history_1h']:
+        if sender.uuid == uuids["history_1h"]:
             type = "1h"
-        elif sender.uuid == uuids['history_12h']:
+        elif sender.uuid == uuids["history_12h"]:
             type = "12h"
         else:
             type = "undefined"
         print(f"callback is type: {type}")
 
-        values_packed = struct.unpack(f'< {len(data)//2}h', data)
+        values_packed = struct.unpack(f"< {len(data)//2}h", data)
 
-        for i in range(len(values_packed)//16):
-            values = values_packed[16*i:16*i+16]
+        for i in range(len(values_packed) // 16):
+            values = values_packed[16 * i : 16 * i + 16]
 
             if 0 < values[0]:
                 for k in range(8):
                     self.values[f"voltage_{type}"][k].pop(0)
                     self.values[f"current_{type}"][k].pop(0)
-                    self.values[f"voltage_{type}"][k].append(float(values[2*k])/1000)
-                    self.values[f"current_{type}"][k].append(float(values[(2*k)+1])/1000)
+                    self.values[f"voltage_{type}"][k].append(
+                        float(values[2 * k]) / 1000
+                    )
+                    self.values[f"current_{type}"][k].append(
+                        float(values[(2 * k) + 1]) / 1000
+                    )
 
             # print(f"{i}: {values}")
-
 
     async def run_buttons(self):
         if self.btn_pwm_pressed:
             self.btn_pwm_pressed = False
             val = self.etr_pwm.get()
-            await self.client.write_gatt_char(uuids['pwm_set'], val.encode())
+            await self.client.write_gatt_char(uuids["pwm_set"], val.encode())
 
         if self.rbt_2min_pressed:
             self.rbt_2min_pressed = False
@@ -200,14 +226,14 @@ class MainWindow(tk.Tk):
 
         if type(self.rbt_1h_pressed) is str:
             self.rbt_1h_pressed = False
-            await self.client.start_notify(uuids['history_1h'], self.history_callback)
+            await self.client.start_notify(uuids["history_1h"], self.history_callback)
         elif self.rbt_1h_pressed is True:
             self.rbt_1h_pressed = False
             self.draw_plot()
 
         if type(self.rbt_12h_pressed) is str:
             self.rbt_12h_pressed = False
-            await self.client.start_notify(uuids['history_12h'], self.history_callback)
+            await self.client.start_notify(uuids["history_12h"], self.history_callback)
         elif self.rbt_12h_pressed is True:
             self.rbt_12h_pressed = False
             self.draw_plot()
@@ -250,7 +276,7 @@ class MainWindow(tk.Tk):
             while not self.app_exit_flag:
                 self.lbl_text.config(text="connected")
                 self.btn_pwm_set.config(state="normal")
-                await self.client.start_notify(uuids['values'], self.values_callback)
+                await self.client.start_notify(uuids["values"], self.values_callback)
                 await self.application_loop()
         except Exception as e:
             print(f"Terminating with Exception {e}")

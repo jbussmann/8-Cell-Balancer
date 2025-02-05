@@ -77,10 +77,12 @@ void pwm_update_values(uint16_t values[8]) {
   pwm_apply_values();
 }
 
-void pwm_calculate_term_volt(uint16_t voltages[8]) {
+static void pwm_calculate_term_volt(uint16_t voltages[8]) {
   uint16_t lowest_voltage = 5000;
   for (size_t i = 0; i < 8; i++) {
-    lowest_voltage = MIN(voltages[i], lowest_voltage);
+    if (500 < voltages[i]) {
+      lowest_voltage = MIN(voltages[i], lowest_voltage);
+    }
   }
 
   uint16_t upper_bound =

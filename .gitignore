@@ -2,3 +2,4 @@ _build
 *-bak
 *-backups
 .venv
+.directories
