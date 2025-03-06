@@ -1,19 +1,100 @@
-(footprint "NetTie-2_SMD_Pad0.127mm" (version 20211014) (generator pcbnew)
-  (layer "F.Cu")
-  (tedit 5A1CF6D3)
-  (descr "Net tie, 2 pin, 0.5mm square SMD pads")
-  (tags "net tie")
-  (attr exclude_from_pos_files exclude_from_bom)
-  (fp_text reference "REF**" (at 0 -1.3) (layer "F.SilkS")
-    (effects (font (size 1 1) (thickness 0.15)))
-    (tstamp eba058f4-175e-4413-b550-93e1748b898d)
-  )
-  (fp_text value "NetTie-2_SMD_Pad0.127mm" (at 0 1.2) (layer "F.Fab")
-    (effects (font (size 1 1) (thickness 0.15)))
-    (tstamp 55decc6c-ccba-49a9-9c58-e53b55d22ed2)
-  )
-  (fp_line (start 0.1 0) (end -0.1 0) (layer "F.Cu") (width 0.127) (tstamp 269efe43-d868-4aa1-89d3-6830b6436fca))
-  (fp_line (start 0.1016 0) (end 0.2016 0.1) (layer "F.Cu") (width 0.127) (tstamp cc00ae5a-e6c8-4bd9-a1a9-258502e5636a))
-  (pad "1" smd circle (at -0.1016 0) (size 0.127 0.127) (layers "F.Cu") (tstamp 1745e8e7-cb05-4e0c-be57-60ff31465fb9))
-  (pad "2" smd circle (at 0.2016 0.1) (size 0.127 0.127) (layers "F.Cu") (tstamp b531e0f4-5d47-4a72-8a54-a3eaafb85b86))
+(footprint "NetTie-2_SMD_Pad0.127mm"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(descr "Net tie, 2 pin, 0.5mm square SMD pads")
+	(tags "net tie")
+	(property "Reference" "REF**"
+		(at 0 -1.3 0)
+		(layer "F.SilkS")
+		(uuid "eba058f4-175e-4413-b550-93e1748b898d")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "NetTie-2_SMD_Pad0.127mm"
+		(at 0 1.2 0)
+		(layer "F.Fab")
+		(uuid "55decc6c-ccba-49a9-9c58-e53b55d22ed2")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "d8dcf1e3-ae71-4aad-a628-779c8d20b9e7")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "1e67ef78-1a14-418a-bda6-18b9c397506a")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "58115695-df16-4793-b67e-0791e2645de1")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr exclude_from_pos_files exclude_from_bom)
+	(net_tie_pad_groups "1, 2")
+	(fp_line
+		(start 0.1 0)
+		(end -0.1 0)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.Cu")
+		(uuid "269efe43-d868-4aa1-89d3-6830b6436fca")
+	)
+	(fp_line
+		(start 0.1016 0)
+		(end 0.2016 0.1)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.Cu")
+		(uuid "cc00ae5a-e6c8-4bd9-a1a9-258502e5636a")
+	)
+	(pad "1" smd circle
+		(at -0.1016 0)
+		(size 0.127 0.127)
+		(layers "F.Cu")
+		(uuid "1745e8e7-cb05-4e0c-be57-60ff31465fb9")
+	)
+	(pad "2" smd circle
+		(at 0.2016 0.1)
+		(size 0.127 0.127)
+		(layers "F.Cu")
+		(uuid "b531e0f4-5d47-4a72-8a54-a3eaafb85b86")
+	)
 )
